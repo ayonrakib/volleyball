@@ -2,21 +2,22 @@ var http = require('http');
 var fs = require('fs');
 var file = require('./movies.json');
 const express = require('express');
+const router = express.Router();
 require('dotenv').config();
 const db = require('./db');
+var routerFile = require('./src/routers/router');
 
 const app = express();
 
+const User = require('./src/models/User');
+const { use } = require('./src/routers/router');
 
 console.log("hello world"); 
 
-http.createServer(function(req,res){
-    fs.readFile("./movies.json","utf-8",(err,jsonString)=>{
-        if(err){
-            console.log("the error is: ",err);
-            return;
-        }
-        res.write(jsonString); 
-        res.end();
-    })
-}).listen(8080)
+app.use('/',routerFile);
+
+// get all users
+app.use('/get-users',routerFile);
+app.use('/get-data', routerFile);
+
+app.listen(8080);

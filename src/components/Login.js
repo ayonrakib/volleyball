@@ -5,19 +5,35 @@ import { useState } from 'react';
 export default function Login(){
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    
+    const [isUserCreated, setIsUserCreated] = useState("user not authenticated");
+    var credentials = {
+        email : "",
+        password : ""
+    }
     if(email!==""){
         console.log("email is: ",email);
+        credentials.email = email;
+        console.log("credentials is: ",credentials);
     }
     if(password!==""){
         console.log("password is: ",password);
+        credentials.password = password;
+        console.log("credentials is: ",credentials);
     }
     function handleLogin(e){
         e.preventDefault();
         console.log("submit was clicked!");
-        if((email === "ayon@gmail.com") && (password === "ayon")){
-            console.log("authenticated");
-        }
+        fetch("http://localhost:8080/get-data/",{
+            method: 'POST',
+            headers:{
+                'Content-type' : 'application/json',
+                'body': credentials
+            }
+        }).then(res => res.json()).then(response => {
+            if(response){
+                setIsUserCreated("User authenticated!");
+            }
+        })
     }
     return (
         <Row className="justify-content-md-center">
@@ -43,6 +59,9 @@ export default function Login(){
                         Submit
                     </Button>
                 </Form>
+            </Col>
+            <Col>
+                {isUserCreated}
             </Col>
       </Row>
     )
