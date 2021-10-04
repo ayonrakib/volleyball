@@ -23,12 +23,13 @@ export default function Login(){
     function handleLogin(e){
         e.preventDefault();
         console.log("submit was clicked!");
-        fetch("http://localhost:8080/get-data/",{
+        fetch("http://localhost:8080/get-data",{
             method: 'POST',
             headers:{
                 'Content-type' : 'application/json',
-                'body': credentials
-            }
+                'Accept' : 'application/json'
+            },
+            body: JSON.stringify({credentials: credentials})
         }).then(res => res.json()).then(response => {
             if(response){
                 setIsUserCreated("User authenticated!");
