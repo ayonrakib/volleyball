@@ -24,5 +24,6 @@ app.use('/',routerFile);
 // get all users
 app.use('/get-users',routerFile);
 app.use('/authenticate', routerFile);
+app.use('/home',routerFile);
 
 app.listen(8080);

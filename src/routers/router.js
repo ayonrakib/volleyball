@@ -80,7 +80,8 @@ router.post('/authenticate', getUserWithEmail, async (req, res, next)=>{
     if((email != "") && (password != "")){
         if(authenticate(email, password)){
             console.log("authenticated!");
-            res.send("authenticated!");
+            // res.send("authenticated!");
+            res.redirect('/home');
         }
         else{
             console.log("not authenticated!");
