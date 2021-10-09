@@ -23,6 +23,6 @@ app.use('/',routerFile);
 
 // get all users
 app.use('/get-users',routerFile);
-app.use('/get-data', routerFile);
+app.use('/authenticate', routerFile);
 
 app.listen(8080);
