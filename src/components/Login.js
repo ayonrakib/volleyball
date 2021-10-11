@@ -1,11 +1,13 @@
 import {Button, Row, Col, Image, Form} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from 'react';
+import axios from 'axios';
+// import { response } from 'express';
 
 export default function Login(){
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [isUserCreated, setIsUserCreated] = useState("user not authenticated");
+    const [userStatus, setuserStatus] = useState("user didnt login!");
     if(email!==""){
         console.log("email is: ",email);
     }
@@ -15,16 +17,18 @@ export default function Login(){
     function handleLogin(e){
         e.preventDefault();
         console.log("submit was clicked!");
-        fetch("http://localhost:8080/authenticate",{
-            method: 'POST',
-            headers:{
-                'Content-type' : 'application/json',
-                'Accept' : 'application/json'
-            },
-            body: JSON.stringify({email: email, password: password})
-        }).then(res => res.json()).then(response => {
-            if(response){
-                setIsUserCreated("User authenticated!");
+        axios({
+            method: 'post',
+            url: 'http://localhost:8080/authenticate',
+            data: {
+                email: email,
+                password: password
+            }
+        }).then(response =>{
+            if (response.data.isAuthenticated) {
+                console.log("user is authenticated!")
+            } else {
+                console.log("user is NOT authenticated!")
             }
         })
     }
@@ -54,7 +58,7 @@ export default function Login(){
                 </Form>
             </Col>
             <Col>
-                {isUserCreated}
+                {userStatus}
             </Col>
       </Row>
     )

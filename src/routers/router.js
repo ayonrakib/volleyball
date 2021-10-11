@@ -52,43 +52,31 @@ router.get('/get-users', async (req,res) => {
     }
 })
 
-router.post('/authenticate', getUserWithEmail, async (req, res, next)=>{
+router.post('/authenticate', getUserWithEmail, (req, res, next)=>{
     var email = req.body.email;
     var password = req.body.password;
     console.log("authenticate url is called");
-    // console.log(req);
     console.log("body of request is: ",req.body);
     console.log("email is: ",req.body.email);
     console.log("password is: ",req.body.password);
-    try {
-        var user = await res.user;
-        var isUserAuthenticated = bcrypt.compareSync(password, res.user.password);
-        console.log("user authenticated?: ",isUserAuthenticated)
-    } catch (error) {
-        console.log(error);
+    if((email != "") && (password != "")){
+        if(authenticate(email, password, res.user)){
+            console.log("authenticated in the nodejs authenticate url!");
+            res.send({
+                isAuthenticated: true
+            });
+        }
+        else{
+            console.log("not authenticated in the nodejs authenticate url!");
+            res.send({
+                isAuthenticated: false
+            });
+        }
     }
-    // try {
-    //     bcrypt.genSalt().then((salt) => {console.log("salt: ",salt)}).catch((error)=>{throw new Error(error)});
-    // } catch (error) {
-    //     alert(error);
-    // }
 
     // for(let property in req.body){
     //     console.log(property);
     // }
-    
-    if((email != "") && (password != "")){
-        if(authenticate(email, password)){
-            console.log("authenticated!");
-            // res.send("authenticated!");
-            res.redirect('/home');
-        }
-        else{
-            console.log("not authenticated!");
-            res.send("not authenticated!");
-        }
-    }
-    // console.log("type of req body is: ", typeof req.body);
 
 })
 
@@ -186,7 +174,10 @@ async function getUserWithEmail(req,res,next){
     next();
 }
 
-function authenticate(email, password){
-    return true;
+function authenticate(email, password, userFromDatabase){
+    if((email === userFromDatabase.email) && (bcrypt.compareSync(password, userFromDatabase.password))){
+        return true;
+    }
+    return false;
 }
 module.exports = router;
