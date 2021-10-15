@@ -24,6 +24,7 @@ router.get('/get-users', async (req,res) => {
     console.log(q.host); //returns 'localhost:8080'
     console.log(q.pathname); //returns '/default.htm'
     console.log(q.search); //returns '?year=2017&month=february'
+    
 
     var qdata = q.query; //returns an object: { year: 2017, month: 'february' }
     console.log(qdata)
@@ -32,17 +33,18 @@ router.get('/get-users', async (req,res) => {
         host: 'google.com',
         path: '/'
     }
-    var request = http.request(options, function (res) {
-        var data = '';
-        res.on('data', function (chunk) {
-            data += chunk;
-        });
-        res.on('end', function () {
-            console.log(data);
+    // var request = http.request(options, function (res) {
+    //     var data = '';
+    //     res.on('data', function (chunk) {
+    //         data += chunk;
+    //     });
+    //     res.on('end', function () {
+    //         console.log(data);
     
-        });
-    });
-    request.end();
+    //     });
+    // });
+    // request.end();
+    console.log("random string: ",getSession())
     try {
         const users = await User.find();
         res.send(users);
@@ -62,14 +64,31 @@ router.post('/authenticate', getUserWithEmail, (req, res, next)=>{
     if((email != "") && (password != "")){
         if(authenticate(email, password, res.user)){
             console.log("authenticated in the nodejs authenticate url!");
-            res.send({
-                isAuthenticated: true
-            });
+            var sessionId = getSession();
+            if (assignSessionToUser(res.user, sessionId)) {
+                console.log("users session is: ",res.user.session);
+                res.send({
+                    data: sessionId,
+                    error: ""
+                });
+            } else {
+                res.send({
+                    data: false,
+                    error: {
+                        errorCode: 401,
+                        errorMessage: "Could not assign session for user, please try to login again"
+                    }
+                });
+            }
+            
+            
+
         }
         else{
             console.log("not authenticated in the nodejs authenticate url!");
             res.send({
-                isAuthenticated: false
+                data: false,
+                error: ""
             });
         }
     }
@@ -140,6 +159,10 @@ router.use('/update-user', getUserWithEmail, async (req, res, next)=>{
         
 })
 
+router.post('/logout',getUserWithSession, (req, res, next)=>{
+    console.log ("came in logout url");
+})
+
 async function getUser(req, res, next){
     var queryString = url.parse(req.url, true);
     try {
@@ -150,6 +173,21 @@ async function getUser(req, res, next){
     }
     res.user = user;
     next();
+}
+
+async function getUserWithSession(req,res,next){
+    var session = req.body.session;
+    console.log("session in getUserWithSession is: ",session);
+    var user = await User.findOne({session: session}).catch(error => console.log(error));
+    console.log("user in getUserWithSession is: ",user);
+    if (assignSessionToUser(user,"")) {
+        console.log("user session has been cleared");
+    } else {
+        console.log("user could not be found in getUserWithSession");
+    }
+    
+    
+    next()
 }
 
 async function getUserWithEmail(req,res,next){
@@ -180,4 +218,19 @@ function authenticate(email, password, userFromDatabase){
     }
     return false;
 }
+
+function getSession(){
+    return crypto.randomBytes(20).toString('hex');
+}
+
+async function assignSessionToUser(user, session){
+    user.session = session;
+    try {
+        await user.save();
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
 module.exports = router;
