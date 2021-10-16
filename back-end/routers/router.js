@@ -1,18 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-require('../../db');
+require('../db');
 const User = require('../models/User');
-const file = require('../../movies.json');
+const file = require('../movies.json');
 var util = require('util');
 var url = require('url');
 var http = require('http');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
-// get all users
+// get all movies
 
 router.get('/', (req, res)=>{
+    console.log("reached / url");
     res.send(file);
     res.end();
 })
@@ -79,9 +80,7 @@ router.post('/authenticate', getUserWithEmail, (req, res, next)=>{
                         errorMessage: "Could not assign session for user, please try to login again"
                     }
                 });
-            }
-            
-            
+            } 
 
         }
         else{
@@ -161,6 +160,23 @@ router.use('/update-user', getUserWithEmail, async (req, res, next)=>{
 
 router.post('/logout',getUserWithSession, (req, res, next)=>{
     console.log ("came in logout url");
+
+    if (assignSessionToUser(res.user,"")) {
+        console.log("user session has been cleared");
+        res.send({
+            data: true,
+            error: ""
+        })
+    } else {
+        console.log("user could not be found in getUserWithSession");
+        res.send({
+            data: false,
+            error:{
+                errorCode: 100,
+                errorMessage: "User could not be logged out"
+            }
+        })
+    }
 })
 
 async function getUser(req, res, next){
@@ -178,15 +194,13 @@ async function getUser(req, res, next){
 async function getUserWithSession(req,res,next){
     var session = req.body.session;
     console.log("session in getUserWithSession is: ",session);
-    var user = await User.findOne({session: session}).catch(error => console.log(error));
-    console.log("user in getUserWithSession is: ",user);
-    if (assignSessionToUser(user,"")) {
-        console.log("user session has been cleared");
-    } else {
-        console.log("user could not be found in getUserWithSession");
+    try {
+        var user = await User.findOne({session: session});
+        console.log("user in getUserWithSession is: ",user);
+    } catch (error) {
+        console.log(error)
     }
-    
-    
+    res.user = user;
     next()
 }
 
@@ -234,3 +248,5 @@ async function assignSessionToUser(user, session){
 }
 
 module.exports = router;
+// module.exports = getUserWithSession;
+// module.exports = getUserWithEmail;

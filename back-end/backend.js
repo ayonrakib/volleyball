@@ -6,16 +6,16 @@ const app = express();
 app.use(express.json());
 const router = express.Router();
 require('dotenv').config();
-const db = require('./db');
-var routerFile = require('./src/routers/router');
+const db = require('../back-end/db');
+var routerFile = require('../back-end/routers/router');
 var cors = require('cors');
 
 
 
 app.use(cors());
 
-const User = require('./src/models/User');
-const { use } = require('./src/routers/router');
+const User = require('../back-end/models/User');
+const { use } = require('../back-end/routers/router');
 
 console.log("hello world"); 
 
