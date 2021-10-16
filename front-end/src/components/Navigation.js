@@ -34,7 +34,7 @@ export default function Navigation(){
                 <Course />
               </Route>
               <Route path="/">
-                <Home />
+                <Login />
               </Route>
             </Switch>
           </div>

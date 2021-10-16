@@ -17,6 +17,20 @@ export default function Home(){
     else if(session){
         console.log("existing session is: ",session);
         // how to use getUserWithEmail middleware here?
+        axios({
+            method: 'POST',
+            url: 'http://localhost:8080/validate',
+            data: {
+                session: session
+            }
+        }).then(response => {
+            if(!response){
+                history.push('/login');
+            }
+            else{
+                history.push('/home');
+            }
+        })
     }
     function deleteSession(){
         cookies.set('session',"");

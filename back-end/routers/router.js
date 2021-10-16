@@ -158,6 +158,19 @@ router.use('/update-user', getUserWithEmail, async (req, res, next)=>{
         
 })
 
+
+router.post('/validate', getUserWithSession, (req, res, next)=>{
+    console.log("came in validate url");
+    // // res.send(true)
+    // console.log(res.user)
+    if(res.user){
+        res.send(true);
+    }
+    else{
+        res.send(false)
+    }
+})
+
 router.post('/logout',getUserWithSession, (req, res, next)=>{
     console.log ("came in logout url");
 

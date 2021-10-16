@@ -19,6 +19,29 @@ export default function Login(){
     if(password!==""){
         console.log("password is: ",password);
     }
+    var session = cookies.get('session');
+    console.log("cookie in login react is: ",session);
+    if((session === "") || (session === undefined)){
+        history.push('/')
+    }
+    else if(session){
+        console.log("existing session is: ",session);
+        // how to use getUserWithEmail middleware here?
+        axios({
+            method: 'POST',
+            url: 'http://localhost:8080/validate',
+            data: {
+                session: session
+            }
+        }).then(response => {
+            if(!response){
+                history.push('/');
+            }
+            else{
+                history.push('/home');
+            }
+        })
+    }
     function handleLogin(e){
         e.preventDefault();
         
@@ -43,6 +66,10 @@ export default function Login(){
             }
         })
     }
+    function createUser(e){
+        e.preventDefault();
+        console.log("entered create user method")
+    }
     return (
         <Row className="justify-content-md-center">
             <Col lg="6">
@@ -63,9 +90,18 @@ export default function Login(){
                         <Form.Label>Password</Form.Label>
                         <Form.Control type="password" placeholder="Password" onChange = {(e) => setPassword(e.target.value)} />
                     </Form.Group>
-                    <Button variant="primary" type="submit">
-                        Submit
-                    </Button>
+                    <Row>
+                        <Col sm="2">
+                            <Button variant="primary" type="submit">
+                                Submit
+                            </Button>
+                        </Col>
+                        <Col sm="3">
+                            <Button variant="primary" type="submit" onClick = {createUser}>
+                                Create User
+                            </Button>
+                        </Col>
+                    </Row>
                 </Form>
             </Col>
             <Col>
