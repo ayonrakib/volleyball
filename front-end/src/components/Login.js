@@ -13,8 +13,7 @@ export default function Login(){
     const [userStatus, setuserStatus] = useState("user didnt login!");
     const history = useHistory();
     if(email!==""){
-        console.log("email is: ",email);
-        
+        console.log("email is: ",email);  
     }
     if(password!==""){
         console.log("password is: ",password);
@@ -69,6 +68,7 @@ export default function Login(){
     function createUser(e){
         e.preventDefault();
         console.log("entered create user method")
+        history.push('/register')
     }
     return (
         <Row className="justify-content-md-center">

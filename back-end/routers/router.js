@@ -98,6 +98,10 @@ router.post('/authenticate', getUserWithEmail, (req, res, next)=>{
 
 })
 
+router.get('/register', (req, res, next)=>{
+    res.send("New uer created");
+})
+
 router.get('/create-user', async (req,res,next)=>{
     console.log("visited create user");
     const salt = bcrypt.genSaltSync(10);
