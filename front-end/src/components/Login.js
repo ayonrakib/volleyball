@@ -41,6 +41,12 @@ export default function Login(){
             }
         })
     }
+
+    function loginWithGoogleOAuth(e){
+        e.preventDefault();
+        console.log("google oauth!")
+    }
+
     function handleLogin(e){
         e.preventDefault();
         
@@ -99,6 +105,11 @@ export default function Login(){
                         <Col sm="3">
                             <Button variant="primary" type="submit" onClick = {createUser}>
                                 Create User
+                            </Button>
+                        </Col>
+                        <Col sm="5">
+                            <Button variant="primary" type="submit" onClick = {loginWithGoogleOAuth}>
+                                Sign in with Google
                             </Button>
                         </Col>
                     </Row>

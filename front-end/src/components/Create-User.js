@@ -4,6 +4,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router';
 
+
 export default function CreateUser(){
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -21,6 +22,23 @@ export default function CreateUser(){
         console.log("last name is: ",lastName);
         console.log("email is: ",email);
         console.log("password is: ",password);
+        if ((firstName !== "") && (lastName !== "") && (email !== "") && (password !== "")) {
+            axios({
+                method: 'POST',
+                url: 'http://localhost:8080/register',
+                data: {
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    password: password
+                }
+            }).then(response => {
+                console.log("response from registering user is: ",response);
+            }) 
+        } else {
+            
+        }
+
     }
     
     return (

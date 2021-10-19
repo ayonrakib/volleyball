@@ -98,32 +98,38 @@ router.post('/authenticate', getUserWithEmail, (req, res, next)=>{
 
 })
 
-router.get('/register', (req, res, next)=>{
-    res.send("New uer created");
-})
-
-router.get('/create-user', async (req,res,next)=>{
-    console.log("visited create user");
+router.post('/register', async (req, res, next)=>{
+    var firstName = req.body.firstName;
+    var lastName = req.body.lastName;
+    var email = req.body.email;
+    var password = req.body.password;
+    console.log("first name is: ",firstName);
+    console.log("first name is: ",lastName);
+    console.log("first name is: ",email);
+    console.log("first name is: ",password);
     const salt = bcrypt.genSaltSync(10);
     console.log("salt: ",salt);
-
-    const hashedPassword = bcrypt.hashSync("password",salt);
+    const hashedPassword = bcrypt.hashSync(password,salt);
     console.log("hashed pass: ",hashedPassword);
     const saltRounds = 10;
     const user = new User({
-        firstName: "Rakib",
-        lastName: "Ayon",
-        email: "rakib@gmail.com",
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
         password: hashedPassword,
-        role: "admin"
+        role: "user"
     });
     try {
         const newUser = await user.save();
         res.status(201).json(newUser);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        res.status(400).json({
+            errorCode: 400,
+            errorMessage: error.message
+        })
     }
 })
+
 
 router.use('/delete-user',getUserWithEmail, async (req, res, next)=>{
     console.log("delete user visited");
