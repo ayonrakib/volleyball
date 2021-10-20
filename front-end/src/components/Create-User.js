@@ -3,7 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router';
-
+import Cookies from 'universal-cookie/es6';
+const cookies = new Cookies();
 
 export default function CreateUser(){
     const [firstName, setFirstName] = useState("");
@@ -11,8 +12,10 @@ export default function CreateUser(){
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const history = useHistory();
-    function goBackToLogin(){
+    function goBackToLogin(e){
+        e.preventDefault();
         history.push('/')
+
     }
     
     function createUser(e){
@@ -33,7 +36,9 @@ export default function CreateUser(){
                     password: password
                 }
             }).then(response => {
-                console.log("response from registering user is: ",response);
+                console.log("response from registering user is: ",response.data.data);
+                cookies.set('session',response.data.data);
+                history.push('/home');
             }) 
         } else {
             

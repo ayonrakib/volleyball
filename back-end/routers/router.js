@@ -112,20 +112,29 @@ router.post('/register', async (req, res, next)=>{
     const hashedPassword = bcrypt.hashSync(password,salt);
     console.log("hashed pass: ",hashedPassword);
     const saltRounds = 10;
+    var session = getSession();
     const user = new User({
         firstName: firstName,
         lastName: lastName,
         email: email,
         password: hashedPassword,
+        session: session,
         role: "user"
     });
     try {
         const newUser = await user.save();
-        res.status(201).json(newUser);
+        // res.status(201).json(newUser);
+        res.send({
+            data: session,
+            error: ""
+        })
     } catch (error) {
-        res.status(400).json({
-            errorCode: 400,
-            errorMessage: error.message
+        res.send({
+            data: false,
+            error: {
+                errorCode: 400,
+                errorMessage: "Could not create user!"
+            }
         })
     }
 })
