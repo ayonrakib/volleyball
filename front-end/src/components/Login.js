@@ -1,4 +1,4 @@
-import {Button, Row, Col, Image, Form} from 'react-bootstrap';
+import {Button, Row, Col, Image, Form, Container} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from 'react';
 import axios from 'axios';
@@ -12,6 +12,9 @@ export default function Login(){
     const [password, setPassword] = useState("");
     const [userStatus, setuserStatus] = useState("user didnt login!");
     const history = useHistory();
+    console.log("history is: ",history)
+    console.log("push prop of history is: ",history.push)
+
     if(email!==""){
         console.log("email is: ",email);  
     }
@@ -77,47 +80,50 @@ export default function Login(){
         history.push('/register')
     }
     return (
-        <Row className="justify-content-md-center">
-            <Col lg="6">
-                <Image style = {{width:"30rem"}} src = {process.env.PUBLIC_URL + "/images/volleyball.png"}></Image>
-            </Col>
+        <Container>
+            <Row className="justify-content-md-center marginTop">
+                <Col lg="6">
+                    <Image style = {{width:"30rem"}} src = {process.env.PUBLIC_URL + "/images/volleyball.png"}></Image>
+                </Col>
             
-            <Col lg="5">
-                <Form onSubmit = {handleLogin}>
-                    <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Label>Email address</Form.Label>
-                        <Form.Control type="email" placeholder="Enter email" onChange = {(e) => setEmail(e.target.value)}/>
-                        <Form.Text className="text-muted">
-                            We'll never share your email with anyone else.
-                        </Form.Text>
-                    </Form.Group>
+                <Col lg="5">
+                    <Form onSubmit = {handleLogin}>
+                        <Form.Group className="mb-3" controlId="formBasicEmail">
+                            <Form.Label>Email address</Form.Label>
+                            <Form.Control type="email" placeholder="Enter email" onChange = {(e) => setEmail(e.target.value)}/>
+                            <Form.Text className="text-muted">
+                                We'll never share your email with anyone else.
+                            </Form.Text>
+                        </Form.Group>
 
-                    <Form.Group className="mb-3" controlId="formBasicPassword">
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" placeholder="Password" onChange = {(e) => setPassword(e.target.value)} />
-                    </Form.Group>
-                    <Row>
-                        <Col sm="2">
-                            <Button variant="primary" type="submit">
-                                Submit
-                            </Button>
-                        </Col>
-                        <Col sm="3">
-                            <Button variant="primary" type="submit" onClick = {createUser}>
-                                Create User
-                            </Button>
-                        </Col>
-                        <Col sm="5">
-                            <Button variant="primary" type="submit" onClick = {loginWithGoogleOAuth}>
-                                Sign in with Google
-                            </Button>
-                        </Col>
-                    </Row>
-                </Form>
-            </Col>
-            <Col>
-                {userStatus}
-            </Col>
-      </Row>
+                        <Form.Group className="mb-3" controlId="formBasicPassword">
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control type="password" placeholder="Password" onChange = {(e) => setPassword(e.target.value)} />
+                        </Form.Group>
+                        <div>
+                            <div className = "similarRowButtons">
+                                <Button variant="primary" type="submit">
+                                    Submit
+                                </Button>
+                            </div>
+                            <div className = "similarRowButtons">
+                                <Button variant="primary" type="submit" onClick = {createUser}>
+                                    Create User
+                                </Button>
+                            </div>
+                            <div className = "similarRowButtons">
+                                <Button variant="primary" type="submit" onClick = {createUser}>
+                                    Create User
+                                </Button>
+                            </div>
+                        </div>
+                    </Form>
+                </Col>
+                <Col>
+                    {userStatus}
+                </Col>
+            </Row>
+        </Container>
+        
     )
 }

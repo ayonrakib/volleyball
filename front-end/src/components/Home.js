@@ -1,11 +1,14 @@
-// import {Button, Row, Col, Image, Form} from 'react-bootstrap';
+import { Nav, Container, Navbar} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Cookies from 'universal-cookie/es6';
 import axios from 'axios';
 import { useHistory } from 'react-router';
+import Navigation from './Navigation';
+import { deleteSession } from '../methods/deleteSession';
+import { LogOut } from '../methods/logOut';
 // const router = require('../routers/router');
 const cookies = new Cookies();
-
+ 
 
 export default function Home(){
     const history = useHistory();
@@ -32,9 +35,6 @@ export default function Home(){
             }
         })
     }
-    function deleteSession(){
-        cookies.set('session',"");
-    }
     function logOut(){
         
         console.log('logout!');
@@ -56,10 +56,7 @@ export default function Home(){
         })
     }
     return(
-        <div>
-            Hello world!
-            <button type = "button" onClick={logOut}>Log out!</button>
-        </div>
+        <Navigation/>
         
     )
 }

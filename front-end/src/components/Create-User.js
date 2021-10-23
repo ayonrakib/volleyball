@@ -72,14 +72,14 @@ export default function CreateUser(){
                         <Form.Label>Password</Form.Label>
                         <Form.Control type = "password" placeholder = "password" onChange = {(e) => setPassword(e.target.value)}></Form.Control>
                     </Form.Group>
-                    <Row>
-                        <Col sm="2">
+                    <div>
+                        <div className = "similarRowButtons">
                             <Button variant="primary" type="submit">Create</Button>
-                        </Col>
-                        <Col sm="4">
+                        </div>
+                        <div className = "similarRowButtons">
                             <Button variant="primary" type="submit" onClick = {goBackToLogin}>Back to login</Button>
-                        </Col>
-                    </Row>
+                        </div>
+                    </div>
                 </Form>
             </Col>
         </Row>

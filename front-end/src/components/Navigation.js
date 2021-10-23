@@ -1,59 +1,27 @@
 import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
+import { LogOut } from "../methods/logOut";
+import { Navbar, Container, Nav } from "react-bootstrap";
+import { useHistory } from "react-router";
 
 export default function Navigation(){
+  const history = useHistory()
     return (
-        <Router>
-          <div>
-            <nav>
-              <ul>
-                <li>
-                  <Link to="/">Home</Link>
-                </li>
-                <li>
-                  <Link to="/about">About</Link>
-                </li>
-                <li>
-                  <Link to="/users">Users</Link>
-                </li>
-                <li>
-                  <Link to='/course'>Courses</Link>
-                </li>
-              </ul>
-            </nav>
-    
-            {/* A <Switch> looks through its children <Route>s and
-                renders the first one that matches the current URL. */}
-            <Switch>
-              <Route path="/about">
-                <About />
-              </Route>
-              <Route path="/users">
-                <Users />
-              </Route>
-              <Route path = "/courses">
-                <Course />
-              </Route>
-              <Route path="/">
-                <Login />
-              </Route>
-            </Switch>
-          </div>
-        </Router>
-      );
+      <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+        <Container>
+            <Navbar.Brand href="#home">Volleyball</Navbar.Brand>
+            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+            <Navbar.Collapse id="responsive-navbar-nav">
+                <Nav className="me-auto">
+                <Nav.Link href="/profile">profile</Nav.Link>
+                <Nav.Link href="/poll">poll</Nav.Link>
+                </Nav>
+                <Nav>
+                <Nav.Link onClick = {() => this.LogOut(history)}>
+                    Logout
+                </Nav.Link>
+                </Nav>
+            </Navbar.Collapse>
+        </Container>
+      </Navbar>
+    )
 }
-
-function Home() {
-    return <h2>Home</h2>;
-  }
-  
-  function About() {
-    return <h2>About</h2>;
-  }
-  
-  function Users() {
-    return <h2>Users</h2>;
-  }
-
-  function Course() {
-    return <h2>Course</h2>;
-  }

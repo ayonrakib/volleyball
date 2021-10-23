@@ -10,7 +10,7 @@ export default function App() {
   return (
           <Router>
             <div className="home">
-              <Navbar/>
+              
                 <Switch>
                     <Route exact path='/home'>
                       <Home/>
