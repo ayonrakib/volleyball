@@ -4,11 +4,15 @@ import { Navbar } from 'react-bootstrap';
 import Home from './components/Home';
 import Login from './components/Login';
 import CreateUser from './components/Create-User';
+import Poll from './components/Poll';
+import Navigation from './components/Navigation';
 
 
 export default function App() {
   return (
+          
           <Router>
+            <Navigation/>
             <div className="home">
               
                 <Switch>
@@ -20,6 +24,9 @@ export default function App() {
                     </Route>
                     <Route exact path = '/register'>
                       <CreateUser/>
+                    </Route>
+                    <Route exact path = "/poll"> 
+                      <Poll/>
                     </Route>
                 </Switch>
             </div>
