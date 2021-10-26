@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const pollSchema = new mongoose.Schema({
+    pollId: Number,
     date:{
         type: Date,
         default: Date.now

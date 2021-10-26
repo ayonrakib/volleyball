@@ -40,7 +40,7 @@ export default function Navigation(){
             </Navbar.Collapse>
         </Container>
       </Navbar>
-      <Button onClick = {() => goBackToPreviousHistory(history)}>Go back to previous url</Button>
+      {/* <Button onClick = {() => goBackToPreviousHistory(history)}>Go back to previous url</Button> */}
       {/* {historyButton} */}
       </div>
 

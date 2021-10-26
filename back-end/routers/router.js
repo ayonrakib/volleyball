@@ -10,6 +10,7 @@ var url = require('url');
 var http = require('http');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const { session } = require('passport');
 
 // get all movies
 
@@ -170,6 +171,7 @@ router.use('/update-user', getUserWithEmail, async (req, res, next)=>{
 
 router.post('/validate', getUserWithSession, (req, res, next)=>{
     console.log("came in validate url");
+    console.log("user in validate url is: ",res.user)
     // // res.send(true)
     // console.log(res.user)
     if(res.user){
@@ -204,8 +206,9 @@ router.post('/logout',getUserWithSession, (req, res, next)=>{
 router.get('/create-poll', async (req, res, next) => {
     console.log("came inside create poll");
     const poll = new Poll({
-        yesVoters:["Ayon",'Eva'],
-        noVoters: ["Golam"]
+        pollId: 1,
+        yesVoters:[],
+        noVoters: []
     });
     console.log("poll object is: ",poll)
     try{
@@ -245,6 +248,64 @@ router.get('/delete-poll', getPoll, async (req, res, next) => {
             }
         })
     }
+})
+
+router.post('/get-user-with-poll-choice', async (req, res, next) => {
+    var session = req.body.session;
+    console.log("session is get-user-with-poll-choice is: ",req.body.session);
+    try {
+        const user = await User.findOne({session: session});
+        console.log("user in get-user-with-poll-choice url is: ",user)
+        res.send(user);
+    } catch (error) {
+        res.send(null)
+    }
+    
+})
+
+router.post('/save-selection-in-poll-database', async (req, res, next) => {
+    console.log("came in save-selection-in-poll-database url")
+    var user = req.body.user;
+    var currentPollId = req.body.id;
+    var isChecked = req.body.isChecked;
+    if(isChecked){
+        try{
+            await Poll.updateOne({
+                pollId: currentPollId
+            },{
+                $addToSet: {yesVoters:user.email}
+            })
+        }
+        catch(error){
+            console.log("error for yes vote is: ",error)
+        }
+    }
+    else{
+        try{
+            await Poll.updateOne({
+                pollId: currentPollId
+            },{
+                $addToSet: {noVoters:user.email}
+            })
+        }
+        catch(error){
+            console.log("error for no vote is: ",error)
+        }
+    }
+    try{
+        await Poll.updateOne({
+            pollId: currentPollId
+        },{
+            $addToSet: {isChecked:user.email}
+        })
+    }
+    catch(error){
+
+    }
+    res.send({
+        data: true,
+        errorMessage: ""
+    })
 })
 
 async function getPoll(req, res, next){
@@ -288,10 +349,11 @@ async function getUserWithSession(req,res,next){
     try {
         var user = await User.findOne({session: session});
         console.log("user in getUserWithSession is: ",user);
+        res.user = user;
     } catch (error) {
         console.log(error)
+        res.user = null;
     }
-    res.user = user;
     next()
 }
 
