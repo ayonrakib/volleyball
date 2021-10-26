@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 require('../db');
+const Poll = require('../models/Poll');
 const User = require('../models/User');
 const file = require('../movies.json');
 var util = require('util');
@@ -34,17 +35,6 @@ router.get('/get-users', async (req,res) => {
         host: 'google.com',
         path: '/'
     }
-    // var request = http.request(options, function (res) {
-    //     var data = '';
-    //     res.on('data', function (chunk) {
-    //         data += chunk;
-    //     });
-    //     res.on('end', function () {
-    //         console.log(data);
-    
-    //     });
-    // });
-    // request.end();
     console.log("random string: ",getSession())
     try {
         const users = await User.find();
@@ -210,6 +200,75 @@ router.post('/logout',getUserWithSession, (req, res, next)=>{
         })
     }
 })
+
+router.get('/create-poll', async (req, res, next) => {
+    console.log("came inside create poll");
+    const poll = new Poll({
+        yesVoters:["Ayon",'Eva'],
+        noVoters: ["Golam"]
+    });
+    console.log("poll object is: ",poll)
+    try{
+        const newPoll = await poll.save();
+        res.send({
+            data: newPoll,
+            error: ""
+        })
+    }catch(error){
+        console.log(error)
+        res.send({
+            data: false,
+            error:{
+                errorCode: 401,
+                errorMessage: "Failed to create poll"
+            }
+        })
+    }
+})
+
+router.get('/delete-poll', getPoll, async (req, res, next) => {
+    console.log("came in delete poll")
+    try{
+        await res.poll.remove();
+        res.send({
+            data: "Poll deleted",
+            error: ""
+        })
+    }
+    catch(error){
+        console.log("poll not found")
+        res.send({
+            data: false,
+            error:{
+                errorCode: 402,
+                errorMessage: "Poll could not be deleted"
+            }
+        })
+    }
+})
+
+async function getPoll(req, res, next){
+    var queryString = url.parse(req.url, true);
+    var id = req.body.id;
+    
+    if (id !== undefined) {
+        id = id;
+    } else {
+        id = queryString.query.id;
+    }
+    console.log("id in getpoll middleware is: ",id)
+    try{
+        var poll = await Poll.findOne({id: id}).catch(error => console.log(error));
+        if(poll !== null){
+            console.log("current poll in getPoll middleware is: ", poll)
+        }
+    }
+    catch(error){
+        console.log("found no poll with id "+id)
+    }
+    res.poll = poll;
+    next()
+}
 
 async function getUser(req, res, next){
     var queryString = url.parse(req.url, true);
