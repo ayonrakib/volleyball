@@ -77,10 +77,16 @@
 .pollBackground{
   padding: 20px 20px;
   background-color: black;
-  font-family:Verdana, Geneva, Tahoma, sans-serif
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  border-radius: 10px;
   
 }
 .font-white{
   color: white;
   
+}
+
+.grayBar{
+  background-color: gray;
+  height: 2px;
 }

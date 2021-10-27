@@ -1,10 +1,10 @@
 // import Navigation from "./Navigation"
-import { Container, Row, Col } from "react-bootstrap"
+import { Container, Row, Col, Button } from "react-bootstrap"
 import YesPollBar from "./YesPollBar"
 import NoPollBar from "./NoPollBar";
 import MaybePollBar from "./MaybePollBar"
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Component } from "react";
+import { Component, useState } from "react";
 import Cookies from "universal-cookie/es6";
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -13,6 +13,9 @@ const cookies = new Cookies()
 
 
 export default function Poll(){
+    const [tempInFahrenheit, setTempInFahrenheit] = useState(0);
+    const [weatherText, seatWeatherText] = useState("");
+    const [weatherIcon, setWeatherIcon] = useState("");
     var daysInAWeek = {
         1 : "Monday",
         2 : "Tuesday",
@@ -45,6 +48,23 @@ export default function Poll(){
     console.log("current date is: ",currentDate)
     console.log("current month is: ",currentMonth)
     console.log("current day is: ",currentDay)
+    axios({
+        method: 'GET',
+        url: "https://api.openweathermap.org/data/2.5/weather?q=Austin&appid=1b6a9c43f4c7125af9f430ff79f20599"
+    }).then(response => {
+        var tempInKelvin = response.data.main.temp;
+        if(tempInFahrenheit === 0){
+            setTempInFahrenheit(Math.ceil((tempInKelvin - 273) * (9/5)) + 32);
+        }
+        if(weatherText === ""){
+            seatWeatherText(response.data.weather[0].description);
+        }
+        
+        if((weatherText === "clear sky") && (weatherIcon === "")){
+            setWeatherIcon(<FontAwesomeIcon icon="sun" />)
+        }
+        console.log("the temp in F is: ",tempInFahrenheit);
+    })
     function handleCheckBox(e){
         var isChecked = e.target.checked;
         var id = e.target.id
@@ -52,6 +72,7 @@ export default function Poll(){
         console.log(id)
         var session = cookies.get('session')
         console.log("cookies is: ",session)
+
         axios({
             method: 'POST',
             url: "http://localhost:8080/get-user-with-poll-choice",
@@ -123,19 +144,22 @@ export default function Poll(){
                 </Col>
             </Row>
         </Container>
-        <Container className = "pollBackground">
+        <Container className = "pollBackground font-white">
             <div className = "font-white">
                 {currentDay}, {currentMonth} {currentDate} at Cedar Park
             </div>
             <div className = "font-white">
                 Friendly match
             </div>
-            <br/> <br/>
             <div className = "font-white">
                 Cedar Park Recreation Center
                 
             </div>
-            <FontAwesomeIcon icon={ faSun } className ="font-white" size = "lg"/>
+            {weatherIcon} {tempInFahrenheit} F {weatherText}
+            <div className = "grayBar">
+
+            </div>
+            <Button>Going</Button>
         </Container>
         </div>
     )
