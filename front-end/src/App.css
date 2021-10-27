@@ -73,3 +73,14 @@
 .solidNoBar{
   background-color: gray;
 }
+
+.pollBackground{
+  padding: 20px 20px;
+  background-color: black;
+  font-family:Verdana, Geneva, Tahoma, sans-serif
+  
+}
+.font-white{
+  color: white;
+  
+}

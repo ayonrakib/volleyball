@@ -2,14 +2,49 @@
 import { Container, Row, Col } from "react-bootstrap"
 import YesPollBar from "./YesPollBar"
 import NoPollBar from "./NoPollBar";
+import MaybePollBar from "./MaybePollBar"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Component } from "react";
 import Cookies from "universal-cookie/es6";
 import axios from "axios";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSun } from '@fortawesome/free-solid-svg-icons'
 const cookies = new Cookies()
 
 
 export default function Poll(){
+    var daysInAWeek = {
+        1 : "Monday",
+        2 : "Tuesday",
+        3 : "Wednesday",
+        4 : "Thursday",
+        5 : "Friday",
+        6 : "Saturday",
+        7 : "Sunday"
+    }
+    var monthsInAYear = {
+        0 : "January",
+        1 : "February",
+        2 : "March",
+        3 : "April",
+        4 : "May",
+        5 : "June",
+        6 : "July",
+        7 : "August",
+        8 : "September",
+        9 : "October",
+        10 : "November",
+        11 : "December"
+    }
+    var today = new Date();
+    var date = today.getDate() + "/"+ parseInt(today.getMonth()+1) +"/"+ today.getFullYear();
+    console.log(date);
+    var currentDay = daysInAWeek[today.getDay()];
+    var currentMonth = monthsInAYear[today.getMonth()];
+    var currentDate = today.getDate();
+    console.log("current date is: ",currentDate)
+    console.log("current month is: ",currentMonth)
+    console.log("current day is: ",currentDay)
     function handleCheckBox(e){
         var isChecked = e.target.checked;
         var id = e.target.id
@@ -45,7 +80,8 @@ export default function Poll(){
         })
     }
     return (
-        <Container>
+        <div>
+            <Container>
             <div className="text-center">
                 Let's play Volleyball on Monday 10/28 at Cedar Park from 8-10 pm
             </div>
@@ -74,6 +110,33 @@ export default function Poll(){
                     <NoPollBar/>
                 </Col>
             </Row>
+            <br/>
+            <Row>
+                <Col sm="1" className="text-center">
+                    <input id="1" type="checkbox" onClick = {(e) => handleCheckBox(e)}/>
+                </Col>
+                <Col sm="2" className="text-center">
+                    No
+                </Col>
+                <Col sm = "9">
+                    <MaybePollBar/>
+                </Col>
+            </Row>
         </Container>
+        <Container className = "pollBackground">
+            <div className = "font-white">
+                {currentDay}, {currentMonth} {currentDate} at Cedar Park
+            </div>
+            <div className = "font-white">
+                Friendly match
+            </div>
+            <br/> <br/>
+            <div className = "font-white">
+                Cedar Park Recreation Center
+                
+            </div>
+            <FontAwesomeIcon icon={ faSun } className ="font-white" size = "lg"/>
+        </Container>
+        </div>
     )
 }

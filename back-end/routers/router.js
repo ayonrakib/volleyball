@@ -273,7 +273,7 @@ router.post('/save-selection-in-poll-database', async (req, res, next) => {
             await Poll.updateOne({
                 pollId: currentPollId
             },{
-                $addToSet: {yesVoters:user.email}
+                $addToSet: {yesVoters:user._id}
             })
         }
         catch(error){
@@ -285,7 +285,7 @@ router.post('/save-selection-in-poll-database', async (req, res, next) => {
             await Poll.updateOne({
                 pollId: currentPollId
             },{
-                $addToSet: {noVoters:user.email}
+                $addToSet: {noVoters:user._id}
             })
         }
         catch(error){
