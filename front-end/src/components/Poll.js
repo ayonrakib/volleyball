@@ -5,6 +5,7 @@ import NoPollBar from "./NoPollBar";
 import MaybePollBar from "./MaybePollBar"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Component, useState } from "react";
+import ToggleButtons from "../methods/ToggleButtons";
 import Cookies from "universal-cookie/es6";
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -65,6 +66,19 @@ export default function Poll(){
         }
         console.log("the temp in F is: ",tempInFahrenheit);
     })
+    // handle polling buttons
+    // input: event
+    // return: nothing, just handle the button and assign option in poll db
+    // method:
+    //      1. button click action prevent korbo
+    //      2. id print kore dekhbo hoy kina
+    //      3. state banabo kon option select kora hoise sheita assign korar jonno
+    //      4. 
+    function handlePollingButton(e){
+        e.preventDefault();
+        console.log("came in handle polling method")
+        console.log("id of the button is: ",e.target.id)
+    }
     function handleCheckBox(e){
         var isChecked = e.target.checked;
         var id = e.target.id
@@ -101,8 +115,8 @@ export default function Poll(){
         })
     }
     return (
-        <div>
-            <Container>
+        <div className = "centerAlignPoll">
+            {/* <Container>
             <div className="text-center">
                 Let's play Volleyball on Monday 10/28 at Cedar Park from 8-10 pm
             </div>
@@ -143,24 +157,37 @@ export default function Poll(){
                     <MaybePollBar/>
                 </Col>
             </Row>
-        </Container>
-        <Container className = "pollBackground font-white">
-            <div className = "font-white">
-                {currentDay}, {currentMonth} {currentDate} at Cedar Park
-            </div>
-            <div className = "font-white">
-                Friendly match
-            </div>
-            <div className = "font-white">
-                Cedar Park Recreation Center
+        </Container> */}
+            <div className = "pollBackground font-white">
+                <div className = "font-white">
+                    {currentDay}, {currentMonth} {currentDate} at Cedar Park
+                </div>
+                <div className = "matchType font-white">
+                    Friendly match
+                </div>
+                <div className = "matchLocation font-white">
+                    Cedar Park Recreation Center
+                    
+                </div>
+                <div className = "weatherDetails">
+                    {weatherIcon} {tempInFahrenheit} F {weatherText}
+                </div>
+                
+                <div className = "grayBar">
+
+                </div>
+                <div className = "pollButtons">
+                    <Button id = "goingPollButton" className = "pollButton" onClick = {(e) => handlePollingButton(e)}>Going</Button> 
+                    <Button id = "noPollButton" className = "pollButton" onClick = {(e) => handlePollingButton(e)}>No</Button>
+                    <Button id = "maybePollButton" className = "pollButton" onClick = {(e) => handlePollingButton(e)}>Maybe</Button>
+                    
+                </div>
+                <div className = "pollButtons">
+                    <ToggleButtons/>
+                </div>
                 
             </div>
-            {weatherIcon} {tempInFahrenheit} F {weatherText}
-            <div className = "grayBar">
-
-            </div>
-            <Button>Going</Button>
-        </Container>
+            
         </div>
     )
 }

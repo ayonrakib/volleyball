@@ -31,6 +31,7 @@ export default function Navigation(){
                 <Nav className="me-auto">
                 <Nav.Link href="/profile">profile</Nav.Link>
                 <Nav.Link href="/poll">poll</Nav.Link>
+                <Nav.Link href="/announcements">announcements</Nav.Link>
                 </Nav>
                 <Nav>
                 <Nav.Link onClick = {() => LogOut(history)}>

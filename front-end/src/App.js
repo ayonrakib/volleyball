@@ -6,6 +6,8 @@ import Login from './components/Login';
 import CreateUser from './components/Create-User';
 import Poll from './components/Poll';
 import Navigation from './components/Navigation';
+import Announcements from './components/Announcements';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { faCheckSquare, faCoffee, faSun } from '@fortawesome/free-solid-svg-icons'
@@ -32,6 +34,9 @@ export default function App() {
                     </Route>
                     <Route exact path = "/poll"> 
                       <Poll/>
+                    </Route>
+                    <Route exact path = "/announcements"> 
+                      <Announcements/>
                     </Route>
                 </Switch>
             </div>
