@@ -6,6 +6,7 @@ import MaybePollBar from "./MaybePollBar"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Component, useState } from "react";
 import ToggleButtons from "../methods/ToggleButtons";
+import ToggleButtonGroupControlled from "../methods/ControlledToggleButton";
 import Cookies from "universal-cookie/es6";
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -185,7 +186,9 @@ export default function Poll(){
                 <div className = "pollButtons">
                     <ToggleButtons/>
                 </div>
-                
+                <div>
+                    <ToggleButtonGroupControlled/>
+                </div>
             </div>
             
         </div>

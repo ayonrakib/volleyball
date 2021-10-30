@@ -1,4 +1,4 @@
-import {ButtonGroup, ToggleButton} from 'react-bootstrap';
+import {ButtonGroup, ToggleButton, ToggleButtonGroup} from 'react-bootstrap';
 import { useState } from 'react';
 export default function ToggleButtons() {
     const [checked, setChecked] = useState(false);
@@ -18,10 +18,9 @@ export default function ToggleButtons() {
               key={idx}
               id={`radio-${idx}`}
               type="radio"
-              variant={idx % 2 ? 'primary' : 'secondary'}
               name="radio"
               value={radio.value}
-              checked={radioValue === radio.value}
+              variant = "secondary"
               onChange={(e) => setRadioValue(e.currentTarget.value)}
             >
               {radio.name}
