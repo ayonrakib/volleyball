@@ -14,7 +14,7 @@ export default function ToggleButtonGroupControlled() {
   
     return (
       <ToggleButtonGroup type="checkbox" value={value} onChange={handleChange}>
-        <ToggleButton variant = "secondary" id="tbg-btn-1 yes-button" value={1}>
+        <ToggleButton variant = "primary" id="tbg-btn-1 yes-button" value={1}>
           Yes
         </ToggleButton>
         <ToggleButton id="tbg-btn-2 no-button" value={2}>

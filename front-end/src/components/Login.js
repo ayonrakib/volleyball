@@ -45,10 +45,10 @@ export default function Login(){
         })
     }
 
-    function loginWithGoogleOAuth(e){
-        e.preventDefault();
-        console.log("google oauth!")
-    }
+    // function loginWithGoogleOAuth(e){
+    //     e.preventDefault();
+    //     console.log("google oauth!")
+    // }
 
     function handleLogin(e){
         e.preventDefault();

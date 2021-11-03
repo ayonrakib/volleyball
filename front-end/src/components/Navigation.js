@@ -1,25 +1,24 @@
-import Button from "@restart/ui/esm/Button";
+
 import { LogOut } from "../methods/logOut";
 import { Navbar, Container, Nav } from "react-bootstrap";
 import { useHistory } from "react-router";
-import goBackToPreviousHistory from "../methods/goBack";
 
 export default function Navigation(){
   const history = useHistory()
   console.log("current history is: ",history);
-  var historyButton = <></>;
-  for(var historyLength = 0; historyLength < history.length; historyLength++){
-    historyButton += <Button>Go back {historyLength} times</Button>
-  }
-  const list = <li>
-    <ul>
-      home
-    </ul>
-    <ul>
-      page
-    </ul>
-    <Button>Home</Button>
-  </li>
+  // var historyButton = <></>;
+  // for(var historyLength = 0; historyLength < history.length; historyLength++){
+  //   historyButton += <Button>Go back {historyLength} times</Button>
+  // }
+  // const list = <li>
+  //   <ul>
+  //     home
+  //   </ul>
+  //   <ul>
+  //     page
+  //   </ul>
+  //   <Button>Home</Button>
+  // </li>
     return (
       <div>
         

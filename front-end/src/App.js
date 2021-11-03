@@ -1,6 +1,5 @@
 import './App.css';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
-import { Navbar } from 'react-bootstrap';
 import Home from './components/Home';
 import Login from './components/Login';
 import CreateUser from './components/Create-User';
