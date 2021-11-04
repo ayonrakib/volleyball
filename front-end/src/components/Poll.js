@@ -1,16 +1,21 @@
 // import Navigation from "./Navigation"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from "react";
-import ToggleButtons from "../methods/ToggleButtons";
+// import ToggleButtons from "../methods/ToggleButtons";
+
+import UnControlledToggleButtons from './UnControlledToggleButtons';
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSun, faCloud } from '@fortawesome/free-solid-svg-icons'
+import Button from 'react-bootstrap/Button';
 
 
 export default function Poll(){
+    console.log("rendering poll component")
     const [tempInFahrenheit, setTempInFahrenheit] = useState(0);
     const [weatherText, seatWeatherText] = useState("");
     const [weatherIcon, setWeatherIcon] = useState("");
+    const [pollId, setPollId] = useState("");
     var daysInAWeek = {
         1 : "Monday",
         2 : "Tuesday",
@@ -34,6 +39,18 @@ export default function Poll(){
         10 : "November",
         11 : "December"
     }
+    axios({
+        method: "GET",
+        url: "http://localhost:8080/get-all-polls",
+        data:""
+    }).then(response => {
+        console.log("all polls are: ",response.data)
+        return(
+            <div>
+                {response.data}
+            </div>
+        )
+    })
     var today = new Date();
     var date = today.getDate() + "/"+ parseInt(today.getMonth()+1) +"/"+ today.getFullYear();
     console.log(date);
@@ -58,8 +75,8 @@ export default function Poll(){
         if((weatherText === "clear sky") && (weatherIcon === "")){
             setWeatherIcon(<FontAwesomeIcon icon="sun" />)
         }
-        if((weatherText == "overcast clouds") && (weatherIcon === "")){
-            setWeatherIcon(<FontAwesomeIcon icon={["fas", "sun"]} />)
+        if((weatherText === "overcast clouds") && (weatherIcon === "")){
+            // setWeatherIcon(<FontAwesomeIcon icon={["fas", "sun"]} />)
         }
         console.log("the temp in F is: ",tempInFahrenheit);
     })
@@ -111,6 +128,28 @@ export default function Poll(){
     //         }
     //     })
     // }
+    function createPoll(e){
+        e.preventDefault();
+        console.log("id of the create poll button is: ",e.target.id);
+        axios({
+            method: "GET",
+            url: "http://localhost:8080/create-poll",
+            data:{
+                data: ""
+            }
+        }).then(response => {
+            console.log("id of the poll is: ",response.data.data._id);
+            setPollId(response.data.data._id);
+        })
+    }
+    if(pollId === ""){
+        return (
+        <Button id = "createPollButton" variant = "primary" onClick = {(e) => createPoll(e)}>
+            Create Poll
+        </Button>
+        )
+    }
+
     return (
         <div className = "centerAlignPoll">
             {/* <Container>
@@ -155,7 +194,7 @@ export default function Poll(){
                 </Col>
             </Row>
         </Container> */}
-            <div className = "pollBackground font-white">
+            <div id = {pollId} className = "pollBackground font-white">
                 <div className = "font-white">
                     {currentDay}, {currentMonth} {currentDate} at Cedar Park
                 </div>
@@ -173,9 +212,12 @@ export default function Poll(){
                 <div className = "grayBar">
 
                 </div>
-                <div className = "pollButtons">
-                    <ToggleButtons/>
+                <div id = "618364b4cdc12df63ac44b16" className = "pollButtons">
+                    <UnControlledToggleButtons/>
                 </div>
+                <Button id = "createPollButton" variant = "primary" onClick = {(e) => createPoll(e)}>
+                    Create Poll
+                </Button>
             </div>
             
         </div>

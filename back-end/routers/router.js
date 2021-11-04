@@ -206,9 +206,9 @@ router.post('/logout',getUserWithSession, (req, res, next)=>{
 router.get('/create-poll', async (req, res, next) => {
     console.log("came inside create poll");
     const poll = new Poll({
-        pollId: 1,
         yesVoters:[],
-        noVoters: []
+        noVoters: [],
+        maybeVoters: []
     });
     console.log("poll object is: ",poll)
     try{
@@ -227,6 +227,20 @@ router.get('/create-poll', async (req, res, next) => {
             }
         })
     }
+})
+
+router.get('/get-all-polls', async (req, res, next) => {
+    console.log("came in get all polls")
+    try {
+        var polls = await Poll.find({});
+        console.log("all polls are: ",polls)
+    } catch (error) {
+        console.log("error is: ",error)
+    }
+    res.send({
+        data: polls,
+        errorMessage: ""
+    })
 })
 
 router.get('/delete-poll', getPoll, async (req, res, next) => {
@@ -260,48 +274,49 @@ router.post('/get-user-with-poll-choice', async (req, res, next) => {
     } catch (error) {
         res.send(null)
     }
-    
 })
 
 router.post('/save-selection-in-poll-database', async (req, res, next) => {
     console.log("came in save-selection-in-poll-database url")
-    var user = req.body.user;
+    
     var currentPollId = req.body.id;
-    var isChecked = req.body.isChecked;
-    if(isChecked){
-        try{
-            await Poll.updateOne({
-                pollId: currentPollId
-            },{
-                $addToSet: {yesVoters:user._id}
-            })
-        }
-        catch(error){
-            console.log("error for yes vote is: ",error)
-        }
-    }
-    else{
-        try{
-            await Poll.updateOne({
-                pollId: currentPollId
-            },{
-                $addToSet: {noVoters:user._id}
-            })
-        }
-        catch(error){
-            console.log("error for no vote is: ",error)
-        }
-    }
-    try{
-        await Poll.updateOne({
-            pollId: currentPollId
-        },{
-            $addToSet: {isChecked:user.email}
-        })
-    }
-    catch(error){
+    console.log("parents class is: ",currentPollId)
+    var pollOption = req.body.pollOption;
+    console.log("poll option is: ",pollOption)
+    // if(isChecked){
+    //     try{
+    //         await Poll.updateOne({
+    //             pollId: currentPollId
+    //         },{
+    //             $addToSet: {yesVoters:user._id}
+    //         })
+    //     }
+    //     catch(error){
+    //         console.log("error for yes vote is: ",error)
+    //     }
+    // }
+    // else{
+    //     try{
+    //         await Poll.updateOne({
+    //             pollId: currentPollId
+    //         },{
+    //             $addToSet: {noVoters:user._id}
+    //         })
+    //     }
+    //     catch(error){
+    //         console.log("error for no vote is: ",error)
+    //     }
+    // }
+    // try{
+    //     await Poll.updateOne({
+    //         pollId: currentPollId
+    //     },{
+    //         $addToSet: {isChecked:user.email}
+    //     })
+    // }
+    // catch(error){
 
-    }
+    // }
     res.send({
         data: true,
         errorMessage: ""
