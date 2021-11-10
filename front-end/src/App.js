@@ -4,7 +4,7 @@ import Home from './components/Home';
 import Login from './components/Login';
 import CreateUser from './components/Create-User';
 import Poll from './components/Poll';
-import Navigation from './components/Navigation';
+import Profile from './components/Profile'
 import Announcements from './components/Announcements';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -18,7 +18,7 @@ export default function App() {
   return (
           
           <Router>
-            <Navigation/>
+            {/* <Navigation/> */}
             <div className="home">
               
                 <Switch>
@@ -36,6 +36,9 @@ export default function App() {
                     </Route>
                     <Route exact path = "/announcements"> 
                       <Announcements/>
+                    </Route>
+                    <Route exact path = "/profile">
+                      <Profile/>
                     </Route>
                 </Switch>
             </div>

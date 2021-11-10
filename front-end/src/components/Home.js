@@ -1,6 +1,7 @@
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Cookies from 'universal-cookie/es6';
+import Navigation from './Navigation';
 import axios from 'axios';
 import { useHistory } from 'react-router';
 const cookies = new Cookies();
@@ -32,6 +33,8 @@ export default function Home(){
         })
     }
     return(
-        <> </>
+        <div>
+            <Navigation/>
+        </div>
     )
 }

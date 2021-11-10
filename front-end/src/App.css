@@ -92,11 +92,15 @@
   background-color: gray;
   height: 2px;
 }
-.centerAlignPoll, .pollButtons{
+.navigationBar, .poll{
+  margin-bottom: 30px;
+}
+.poll, .pollButtons{
   display: flex;
   justify-content: center;
   align-items: center;
   height:100%;
+  
 }
 .matchType, .matchLocation, .weatherDetails, .grayBar{
   margin-bottom: 20px;

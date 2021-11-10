@@ -22,7 +22,7 @@ export default function Navigation(){
     return (
       <div>
         
-        <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+        <Navbar className = "navigationBar" collapseOnSelect expand="lg" bg="dark" variant="dark">
         <Container>
             <Navbar.Brand href="/home">Volleyball</Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />

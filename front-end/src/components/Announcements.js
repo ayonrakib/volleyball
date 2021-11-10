@@ -1,3 +1,9 @@
+import Navigation from "./Navigation"
 export default function Announcements(){
-    return "Hello world"
+    return (
+        <div>
+            <Navigation/>
+            Hello World
+        </div>
+    )
 }

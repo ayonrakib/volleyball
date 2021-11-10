@@ -111,11 +111,6 @@ export default function Login(){
                                     Create User
                                 </Button>
                             </div>
-                            <div className = "similarRowButtons">
-                                <Button variant="primary" type="submit" onClick = {createUser}>
-                                    Create User
-                                </Button>
-                            </div>
                         </div>
                     </Form>
                 </Col>

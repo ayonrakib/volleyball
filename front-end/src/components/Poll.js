@@ -1,21 +1,73 @@
 // import Navigation from "./Navigation"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from "react";
+import Navigation from './Navigation';
 // import ToggleButtons from "../methods/ToggleButtons";
-
+import ControlledToggleButton from "../components/ControlledToggleButton"
 import UnControlledToggleButtons from './UnControlledToggleButtons';
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSun, faCloud } from '@fortawesome/free-solid-svg-icons'
 import Button from 'react-bootstrap/Button';
+var _ = require('lodash')
 
-
+// method Poll
+// return: jodi kono poll na thake, create poll button return. noile poll gula return.
+// method:
+//      1. Fahrenheit temp er hook banabo
+//      2. weather text er hook
+//      3. weather icon er hook
+//      4. poll data er hook
+//      5. week er 7 days er dict banabo
+//      6. year er 12 month er dict
+//      7. library theke ajker day month date ber korbo
+//      8. open weather map API call korbo:
+//          8.1. response e pabo K te temp
+//          8.2. K temp ke F e convert korbo
+//          8.3. weather text hook e assign korbo
+//          8.4. weather icon assign korbo
+//      9. method createPoll
+//      10. parameter: event
+//      11. return: kisui na, shudhu new poll create korbo db te
+//      12. method:
+//          12.1. button click korar default behavior thamabo
+//          12.2. create poll url e API call korbo
+//          12.3. response paile:
+//              12.3.1. response log korbo
+//      13. method getPollJSX
+//      14. input: props dict
+//      15. return: ekta poll er JSX expression
+//      16. method:
+//          16.1. poll ke centar align korar class
+//          16.2. poll id insert korbo 
+//          16.3. current day month and date at a location
+//          16.4. Friendly match
+//          16.5. weather details
+//          16.6. gray bar
+//          16.7. toggle buttons
+//          16.8. create poll button
+//      17. empty polls list
+//      18. get all polls e API call
+//      19. response paile:
+//          19.1. check korbo respinse data and pollData eki list kina
+//          19.2. same na hoile:
+//              19.2.1. polLData hook e assign korbo response er poll gula
+//      20. pollData er sob gula index er jonno:
+//          20.1. props dict banabo with pollid, current day and date, weather icon, text and temp
+//          20.2. polls list e append getPollJSX(props)
+//          20.3. orthat, polls list e append korbo sob gula poll with unique data
+//      21. jodi pollData empty list hoy:
+//          21.1. create poll button er JSX return korbo
+//      22. noile:
+//          22.1. navigation bar
+//          22.2. sob poll
+//          22.3. create poll button return
 export default function Poll(){
     console.log("rendering poll component")
     const [tempInFahrenheit, setTempInFahrenheit] = useState(0);
     const [weatherText, seatWeatherText] = useState("");
     const [weatherIcon, setWeatherIcon] = useState("");
-    const [pollId, setPollId] = useState("");
+    const [pollData, setpollData] = useState([]);
     var daysInAWeek = {
         1 : "Monday",
         2 : "Tuesday",
@@ -39,18 +91,7 @@ export default function Poll(){
         10 : "November",
         11 : "December"
     }
-    axios({
-        method: "GET",
-        url: "http://localhost:8080/get-all-polls",
-        data:""
-    }).then(response => {
-        console.log("all polls are: ",response.data)
-        return(
-            <div>
-                {response.data}
-            </div>
-        )
-    })
+
     var today = new Date();
     var date = today.getDate() + "/"+ parseInt(today.getMonth()+1) +"/"+ today.getFullYear();
     console.log(date);
@@ -80,54 +121,6 @@ export default function Poll(){
         }
         console.log("the temp in F is: ",tempInFahrenheit);
     })
-    // handle polling buttons
-    // input: event
-    // return: nothing, just handle the button and assign option in poll db
-    // method:
-    //      1. button click action prevent korbo
-    //      2. id print kore dekhbo hoy kina
-    //      3. state banabo kon option select kora hoise sheita assign korar jonno
-    //      4. 
-    // function handlePollingButton(e){
-    //     e.preventDefault();
-    //     console.log("came in handle polling method")
-    //     console.log("id of the button is: ",e.target.id)
-    // }
-    // function handleCheckBox(e){
-    //     var isChecked = e.target.checked;
-    //     var id = e.target.id
-    //     console.log(isChecked)
-    //     console.log(id)
-    //     var session = cookies.get('session')
-    //     console.log("cookies is: ",session)
-
-    //     axios({
-    //         method: 'POST',
-    //         url: "http://localhost:8080/get-user-with-poll-choice",
-    //         data:{
-    //             session: session
-    //         }
-    //     }).then(response =>{
-    //         console.log("response from get-user-with-poll-choice is: ",response)
-    //         if (response !== null) {
-    //             var user = response.data;
-    //             console.log("found user with session in Poll: ",response.data)
-    //             axios({
-    //                 method: 'POST',
-    //                 url: 'http://localhost:8080/save-selection-in-poll-database',
-    //                 data:{
-    //                     user: user,
-    //                     id: id,
-    //                     isChecked: isChecked
-    //                 }
-    //             }).then(response => {
-    //                 console.log("response from save-selection-in-poll-database is: ",response)
-    //             })
-    //         } else {
-    //             console.log("could not find user in Poll")
-    //         }
-    //     })
-    // }
     function createPoll(e){
         e.preventDefault();
         console.log("id of the create poll button is: ",e.target.id);
@@ -139,87 +132,85 @@ export default function Poll(){
             }
         }).then(response => {
             console.log("id of the poll is: ",response.data.data._id);
-            setPollId(response.data.data._id);
         })
     }
-    if(pollId === ""){
+
+    function getPollJSX(props){
         return (
-        <Button id = "createPollButton" variant = "primary" onClick = {(e) => createPoll(e)}>
-            Create Poll
-        </Button>
+            <div key = {Math.random()} className = "poll">
+                <div id = {props.pollId} className = "pollBackground font-white">
+                    <div className = "font-white">
+                        {props.currentDay}, {props.currentMonth} {props.currentDate} at Cedar Park
+                    </div>
+                    <div className = "matchType font-white">
+                        Friendly match
+                    </div>
+                    <div className = "matchLocation font-white">
+                        Cedar Park Recreation Center
+                        
+                    </div>
+                    <div className = "weatherDetails">
+                        {props.weatherIcon} {props.tempInFahrenheit} F {props.weatherText}
+                    </div>
+                    
+                    <div className = "grayBar">
+    
+                    </div>
+                    <div id = {props.pollId} className = "pollButtons">
+                        <UnControlledToggleButtons id = {props.pollId}/>
+                    </div>
+                </div>
+            </div>
         )
     }
 
-    return (
-        <div className = "centerAlignPoll">
-            {/* <Container>
-            <div className="text-center">
-                Let's play Volleyball on Monday 10/28 at Cedar Park from 8-10 pm
-            </div>
-            
-            <br/> <br/> <br/>
-            <Row>
-                <Col sm="1" className="text-center">
-                    <input id = "1" type="checkbox" onClick = {(e) => handleCheckBox(e)}/>
-                </Col>
-                <Col sm="2" className="text-center">
-                    Yes
-                </Col>
-                <Col sm = "9">
-                    <YesPollBar/>
-                </Col>
-            </Row>
-            <br/>
-            <Row>
-                <Col sm="1" className="text-center">
-                    <input id="1" type="checkbox" onClick = {(e) => handleCheckBox(e)}/>
-                </Col>
-                <Col sm="2" className="text-center">
-                    No
-                </Col>
-                <Col sm = "9">
-                    <NoPollBar/>
-                </Col>
-            </Row>
-            <br/>
-            <Row>
-                <Col sm="1" className="text-center">
-                    <input id="1" type="checkbox" onClick = {(e) => handleCheckBox(e)}/>
-                </Col>
-                <Col sm="2" className="text-center">
-                    No
-                </Col>
-                <Col sm = "9">
-                    <MaybePollBar/>
-                </Col>
-            </Row>
-        </Container> */}
-            <div id = {pollId} className = "pollBackground font-white">
-                <div className = "font-white">
-                    {currentDay}, {currentMonth} {currentDate} at Cedar Park
-                </div>
-                <div className = "matchType font-white">
-                    Friendly match
-                </div>
-                <div className = "matchLocation font-white">
-                    Cedar Park Recreation Center
-                    
-                </div>
-                <div className = "weatherDetails">
-                    {weatherIcon} {tempInFahrenheit} F {weatherText}
-                </div>
-                
-                <div className = "grayBar">
-
-                </div>
-                <div id = "618364b4cdc12df63ac44b16" className = "pollButtons">
-                    <UnControlledToggleButtons/>
-                </div>
-                <Button id = "createPollButton" variant = "primary" onClick = {(e) => createPoll(e)}>
+    var polls = [];
+    axios({
+        method: "GET",
+        url: "http://localhost:8080/get-all-polls",
+        data:""
+    }).then(response => {
+        console.log("all polls are: ",response.data)
+        if(!(_.isEqual(pollData, response.data.data))){
+            setpollData(response.data.data)
+        }
+    })
+    for(var pollIndex = 0; pollIndex < pollData.length; pollIndex++){
+        console.log("current poll is: ",pollData[pollIndex])
+        var props = {
+                        pollId : `${pollData[pollIndex]._id}`,
+                        currentDay : `${currentDay}`,
+                        currentMonth: `${currentMonth}`,
+                        currentDate : `${currentDate}`,
+                        weatherIcon : weatherIcon,
+                        tempInFahrenheit : `${tempInFahrenheit}`,
+                        weatherText : `${weatherText}`
+                    }
+        polls.push(getPollJSX(props));
+    }
+    console.log("polls are: ",polls)
+    if (_.isEqual(pollData,[])) {
+        return(
+            <div className = "poll">
+                <Button variant = "primary" onClick = {(e) => createPoll(e)}>
                     Create Poll
                 </Button>
             </div>
-            
-        </div>
-    )
+        )
+
+    } else {
+        return(
+            <div>
+                <Navigation/>
+                {polls}
+                <div className = "poll">
+                    <Button variant = "primary" onClick = {(e) => createPoll(e)}>
+                        Create Poll
+                    </Button>
+                </div>
+                
+            </div>
+        )
+    }
+
 }

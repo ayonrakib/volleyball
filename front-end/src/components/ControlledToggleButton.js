@@ -13,7 +13,7 @@ export default function ToggleButtonGroupControlled() {
     const handleChange = (val) => setValue(val);
   
     return (
-      <ToggleButtonGroup type="checkbox" value={value} onChange={handleChange}>
+      <ToggleButtonGroup name="options" type="radio" value={value} onChange={handleChange}>
         <ToggleButton variant = "primary" id="tbg-btn-1 yes-button" value={1}>
           Yes
         </ToggleButton>
