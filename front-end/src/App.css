@@ -109,6 +109,9 @@
   margin-right: 10px;
   background-color: gray;
 }
-body{
-  height: 100%;
+.loginForm{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  min-height:100vh;
 }

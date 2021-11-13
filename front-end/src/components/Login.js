@@ -80,7 +80,7 @@ export default function Login(){
         history.push('/register')
     }
     return (
-        <Container>
+        <Container className = "loginForm">
             <Row className="justify-content-md-center marginTop">
                 <Col lg="6">
                     <Image style = {{width:"30rem"}} src = {process.env.PUBLIC_URL + "/images/volleyball.png"}></Image>

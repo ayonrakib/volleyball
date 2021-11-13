@@ -11,7 +11,9 @@ var http = require('http');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const { session } = require('passport');
-
+var cookieParser = require('cookie-parser');
+var app = express();
+app.use(cookieParser());
 // get all movies
 
 router.get('/', (req, res)=>{
@@ -276,13 +278,69 @@ router.post('/get-user-with-poll-choice', async (req, res, next) => {
     }
 })
 
-router.post('/save-selection-in-poll-database', async (req, res, next) => {
+// save selection in poll db
+// input: req, res, next
+// return: true if saved in db, false if not
+// method:
+//      1. req theke current poll id ber korbo
+//      2. req theke clicked poll button id ber korbo
+//      3. poll button id er kon index e - ase sheita ber korbo
+//      4. poll button id er 0 theke - index porjonto kete nibo
+//      5. poll button id to poll choice dict banabo, key hobe kete newa string and value hobe yes no maybe
+//      6. browser er cookie read korbo and check korbo kon user
+//      7. poll id theke poll obj khuje ber korbo
+//      8. jodi user ba poll khuje na pai, error return korbo and message pathabo
+//      9. db te oi poll id theke poll khuje ber korbo and oi user er id diye yes/no/maybe save korbo
+//      10. true return korbo client ke
+
+router.post('/save-selection-in-poll-database', getUserWithSession, async (req, res, next) => {
     console.log("came in save-selection-in-poll-database url")
     
     var currentPollId = req.body.id;
     console.log("parents class is: ",currentPollId)
-    var pollOption = req.body.pollOption;
-    console.log("poll option is: ",pollOption)
+    var pollButtonId = req.body.pollOption;
+    console.log("poll option is: ",pollButtonId)
+    var index = pollButtonId.search("-");
+    console.log("- index is: ",index)
+    var pollChoice = pollButtonId.slice(0,index);
+    console.log("poll choice is: ",pollChoice)
+    var pollIdToChoice = {
+        "yesButton" : "yesVoters",
+        "noButton" :"noVoters",
+        "maybeButton" : "maybeVoters"
+    }
+    var user = res.user;
+    var selectedPollChoice = pollIdToChoice[pollChoice];
+    console.log("selected poll choice: ", selectedPollChoice)
+    var poll = await Poll.findOne({_id:currentPollId});
+    if((user === null) || (poll === null)){
+        res.send({
+            data: false,
+            error:{
+                errorCode: 1000,
+                errorMessage: "User was not found"
+            }
+        })
+    }
+    try{
+        await Poll.updateOne({
+            _id: currentPollId
+        },
+        {
+            $addToSet:{selectedPollChoice:user._id}
+        })
+    }
+    catch(error){
+        console.log(error)
+    }
+    res.send({
+        data: true,
+        error: ""
+    })
+    // console.log("the targeted poll is: ",poll)
+    // var cookies = new Cookies(req, res)
+    // console.log("the cookie is: ",cookies)
+
     // if(isChecked){
     //     try{
     //         await Poll.updateOne({
@@ -317,10 +375,6 @@ router.post('/save-selection-in-poll-database', async (req, res, next) => {
     // catch(error){
 
     // }
-    res.send({
-        data: true,
-        errorMessage: ""
-    })
 })
 
 async function getPoll(req, res, next){
