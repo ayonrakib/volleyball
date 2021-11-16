@@ -115,3 +115,13 @@
   justify-content:center;
   min-height:100vh;
 }
+.profile{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.profilePictureBlock{
+  text-align: right;
+}

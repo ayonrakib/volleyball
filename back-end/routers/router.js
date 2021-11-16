@@ -310,9 +310,11 @@ router.post('/save-selection-in-poll-database', getUserWithSession, async (req, 
         "maybeButton" : "maybeVoters"
     }
     var user = res.user;
+    console.log("user is: ",user)
     var selectedPollChoice = pollIdToChoice[pollChoice];
     console.log("selected poll choice: ", selectedPollChoice)
     var poll = await Poll.findOne({_id:currentPollId});
+    console.log("the poll is: ",poll)
     if((user === null) || (poll === null)){
         res.send({
             data: false,
@@ -322,61 +324,149 @@ router.post('/save-selection-in-poll-database', getUserWithSession, async (req, 
             }
         })
     }
-    try{
-        await Poll.updateOne({
-            _id: currentPollId
-        },
-        {
-            $addToSet:{selectedPollChoice:user._id}
-        })
+    if(selectedPollChoice === "yesVoters"){
+        deleteNoVote(user._id, currentPollId)
+        deleteMaybeVote(user._id, currentPollId)
+        try{
+            await Poll.updateOne({
+                _id: currentPollId
+            },
+            {
+                $addToSet:{yesVoters:user._id}
+            })
+            res.send({
+                data: true,
+                error: ""
+            })
+        }
+        catch(error){
+            console.log(error)
+        }
     }
-    catch(error){
-        console.log(error)
+    else if(selectedPollChoice === "noVoters"){
+        deleteYesVote(user._id, currentPollId)
+        deleteMaybeVote(user._id, currentPollId)
+        try{
+            await Poll.updateOne({
+                _id: currentPollId
+            },
+            {
+                $addToSet:{noVoters:user._id}
+            })
+            res.send({
+                data: true,
+                error: ""
+            })
+        }
+        catch(error){
+            console.log(error)
+        }
     }
-    res.send({
-        data: true,
-        error: ""
-    })
-    // console.log("the targeted poll is: ",poll)
-    // var cookies = new Cookies(req, res)
-    // console.log("the cookie is: ",cookies)
-
-    // if(isChecked){
-    //     try{
-    //         await Poll.updateOne({
-    //             pollId: currentPollId
-    //         },{
-    //             $addToSet: {yesVoters:user._id}
-    //         })
-    //     }
-    //     catch(error){
-    //         console.log("error for yes vote is: ",error)
-    //     }
-    // }
-    // else{
-    //     try{
-    //         await Poll.updateOne({
-    //             pollId: currentPollId
-    //         },{
-    //             $addToSet: {noVoters:user._id}
-    //         })
-    //     }
-    //     catch(error){
-    //         console.log("error for no vote is: ",error)
-    //     }
-    // }
-    // try{
-    //     await Poll.updateOne({
-    //         pollId: currentPollId
-    //     },{
-    //         $addToSet: {isChecked:user.email}
-    //     })
-    // }
-    // catch(error){
-
-    // }
+    else if(selectedPollChoice === "maybeVoters"){
+        deleteYesVote(user._id, currentPollId)
+        deleteNoVote(user._id, currentPollId)
+        try{
+            await Poll.updateOne({
+                _id: currentPollId
+            },
+            {
+                $addToSet:{maybeVoters:user._id}
+            })
+            res.send({
+                data: true,
+                error: ""
+            })
+        }
+        catch(error){
+            console.log(error)
+        }
+    }
 })
 
+
+// get profile picture
+// input: nothing
+// return: profile picture name as json if found, otherwise null
+// method:
+//      1. session theke user khuje ber korbo
+//      2. jodi user khuje na pai:
+//          2.1. JSOn return korbo null
+//      3. 
+
+// delete yes vote for user
+// input: voter id and currentPollId
+// return: nothing, just delete the vote
+// method:
+//      1. poll db er yes vote array te khujbo ei voter id ase kina
+//      2. jodi thake, delete kore dibo entry
+//      3. jodi error hoy:
+//          3.1. log korbo error
+async function deleteYesVote(voterId, currentPollId){
+    try {
+        await Poll.updateOne(
+            {
+                _id : currentPollId
+            },
+            {
+                $pull:{
+                    yesVoters: voterId
+                }
+            }
+            )
+    } catch (error) {
+        console.log("error is: ",error)
+    }
+}
+
+// delete no vote for user
+// input: voter id
+// return: nothing, just delete the vote
+// method:
+//      1. poll db er no vote array te khujbo ei voter id ase kina
+//      2. jodi thake, delete kore dibo entry
+//      3. jodi error hoy:
+//          3.1. log korbo error
+async function deleteNoVote(voterId, currentPollId){
+    try {
+        await Poll.updateOne(
+            {
+                _id : currentPollId
+            },
+            {
+                $pull:{
+                    noVoters: voterId
+                }
+            }
+            )
+    } catch (error) {
+        console.log("error is: ",error)
+    }
+}
+
+// delete maybe vote for user
+// input: voter id and currentPollId
+// return: nothing, just delete the vote
+// method:
+//      1. poll db er maybe vote array te khujbo ei voter id ase kina
+//      2. jodi thake, delete kore dibo entry
+//      3. jodi error hoy:
+//          3.1. log korbo error
+async function deleteMaybeVote(voterId, currentPollId){
+    try {
+        await Poll.updateOne(
+            {
+                _id : currentPollId
+            },
+            {
+                $pull:{
+                    maybeVoters: voterId
+                }
+            }
+            )
+    } catch (error) {
+        console.log("error is: ",error)
+    }
+}
 async function getPoll(req, res, next){
     var queryString = url.parse(req.url, true);
     var id = req.body.id;
@@ -418,10 +508,15 @@ async function getUserWithSession(req,res,next){
     try {
         var user = await User.findOne({session: session});
         console.log("user in getUserWithSession is: ",user);
-        res.user = user;
+        if(user === null){
+            res.user = null;
+        }
+        else{
+            res.user = user;
+        }
+        
     } catch (error) {
         console.log(error)
-        res.user = null;
     }
     next()
 }

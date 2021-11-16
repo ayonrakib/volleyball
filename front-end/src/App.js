@@ -18,14 +18,15 @@ export default function App() {
   return (
           
           <Router>
-            {/* <Navigation/> */}
             <div className="home">
-              
                 <Switch>
                     <Route exact path='/home'>
                       <Home/>
                     </Route>
                     <Route exact path = '/'>
+                      <Login/>
+                    </Route>
+                    <Route exact path = '/login'>
                       <Login/>
                     </Route>
                     <Route exact path = '/register'>

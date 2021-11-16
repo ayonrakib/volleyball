@@ -12,15 +12,6 @@ export default function Login(){
     const [password, setPassword] = useState("");
     const [userStatus, setuserStatus] = useState("user didnt login!");
     const history = useHistory();
-    console.log("history is: ",history)
-    console.log("push prop of history is: ",history.push)
-
-    if(email!==""){
-        console.log("email is: ",email);  
-    }
-    if(password!==""){
-        console.log("password is: ",password);
-    }
     var session = cookies.get('session');
     console.log("cookie in login react is: ",session);
     if((session === "") || (session === undefined)){
@@ -36,7 +27,8 @@ export default function Login(){
                 session: session
             }
         }).then(response => {
-            if(!response){
+            console.log("response in login validate is: ",response)
+            if(!(response.data)){
                 history.push('/');
             }
             else{

@@ -2,6 +2,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from "react";
 import Navigation from './Navigation';
+import ValidateUser from './ValidateUser';
 // import ToggleButtons from "../methods/ToggleButtons";
 import ControlledToggleButton from "../components/ControlledToggleButton"
 import UnControlledToggleButtons from './UnControlledToggleButtons';
@@ -63,6 +64,7 @@ var _ = require('lodash')
 //          22.2. sob poll
 //          22.3. create poll button return
 export default function Poll(){
+    ValidateUser()
     console.log("rendering poll component")
     const [tempInFahrenheit, setTempInFahrenheit] = useState(0);
     const [weatherText, seatWeatherText] = useState("");
