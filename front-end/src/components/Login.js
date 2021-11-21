@@ -55,10 +55,8 @@ export default function Login(){
             }
         }).then(response =>{
             if (response.data.data) {
-                console.log("user is authenticated!");
-                // cookies.set('session',response.data.data)
                 console.log("session id is: ",response.data.data);
-                cookies.set('session',response.data.data);
+                cookies.set('session',response.data.data,{expires: new Date(Date.now()+1000000000)});
                 history.push('/home');
             } else {
                 console.log("user is NOT authenticated!");
@@ -96,7 +94,7 @@ export default function Login(){
                             <div className = "similarRowButtons">
                                 <Button variant="primary" type="submit">
                                     Submit
-                                </Button>
+                                </Button> 
                             </div>
                             <div className = "similarRowButtons">
                                 <Button variant="primary" type="submit" onClick = {createUser}>

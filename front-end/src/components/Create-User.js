@@ -11,6 +11,7 @@ export default function CreateUser(){
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [profilePicture, setProfilePicture] = useState("");
     const history = useHistory();
     function goBackToLogin(e){
         e.preventDefault();
@@ -21,6 +22,7 @@ export default function CreateUser(){
     function createUser(e){
         e.preventDefault();
         console.log("User created");
+        console.log("file name is: ",e.target.files[0])
         console.log("first name is: ",firstName);
         console.log("last name is: ",lastName);
         console.log("email is: ",email);
@@ -53,7 +55,7 @@ export default function CreateUser(){
             </Col>
             <Col lg="5">
                 <Form onSubmit = {createUser}>
-                    <Form.Group className = "mb-3" controlId = "formBasicFirstName">
+                    <Form.Group className = "mb-3" controlId = "formBasicFirstName" aria-required = "true">
                         <Form.Label> First Name</Form.Label>
                         <Form.Control type = "text" placeholder = "First Name" onChange = {(e) => setFirstName(e.target.value)}></Form.Control>
                     </Form.Group>
@@ -71,6 +73,10 @@ export default function CreateUser(){
                     <Form.Group className = "mb-3" controlId = "formBasicPassword">
                         <Form.Label>Password</Form.Label>
                         <Form.Control type = "password" placeholder = "password" onChange = {(e) => setPassword(e.target.value)}></Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId="formFile" className="mb-3">
+                        <Form.Label>Default file input example</Form.Label>
+                        <Form.Control type="file" />
                     </Form.Group>
                     <div>
                         <div className = "similarRowButtons">
