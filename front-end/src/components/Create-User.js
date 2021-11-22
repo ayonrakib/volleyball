@@ -19,24 +19,34 @@ export default function CreateUser(){
 
     }
     
+    function assignProfilePicture(e){
+        e.preventDefault();
+        console.log("file name is: ",e.target.files[0])
+        setProfilePicture(e.target.files[0])
+    }
+
     function createUser(e){
         e.preventDefault();
-        console.log("User created");
-        console.log("file name is: ",e.target.files[0])
+        console.log("User create method");
         console.log("first name is: ",firstName);
         console.log("last name is: ",lastName);
         console.log("email is: ",email);
         console.log("password is: ",password);
-        if ((firstName !== "") && (lastName !== "") && (email !== "") && (password !== "")) {
+        console.log("profile pic is: ",profilePicture)
+        var formData = new FormData();
+        formData.append("firstName", firstName);
+        formData.append("lastName", lastName);
+        formData.append("email", email);
+        formData.append("password", password);
+        formData.append("profilePicture", profilePicture);
+        if ((firstName !== "") && (lastName !== "") && (email !== "") && (password !== "") && (profilePicture !== "")) {
             axios({
                 method: 'POST',
+                headers:{
+                    'Content-Type': 'multipart/form-data'
+                },
                 url: 'http://localhost:8080/register',
-                data: {
-                    firstName: firstName,
-                    lastName: lastName,
-                    email: email,
-                    password: password
-                }
+                data: formData
             }).then(response => {
                 console.log("response from registering user is: ",response.data.data);
                 cookies.set('session',response.data.data);
@@ -74,7 +84,7 @@ export default function CreateUser(){
                         <Form.Label>Password</Form.Label>
                         <Form.Control type = "password" placeholder = "password" onChange = {(e) => setPassword(e.target.value)}></Form.Control>
                     </Form.Group>
-                    <Form.Group controlId="formFile" className="mb-3">
+                    <Form.Group controlId="formFile" className="mb-3" onChange = {(e) => assignProfilePicture(e)}>
                         <Form.Label>Default file input example</Form.Label>
                         <Form.Control type="file" />
                     </Form.Group>

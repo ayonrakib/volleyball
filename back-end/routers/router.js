@@ -5,6 +5,8 @@ require('../db');
 const Poll = require('../models/Poll');
 const User = require('../models/User');
 const file = require('../movies.json');
+var bodyParser = require('body-parser');
+const multer = require('multer');
 var util = require('util');
 var url = require('url');
 var http = require('http');
@@ -12,9 +14,46 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const { session } = require('passport');
 var cookieParser = require('cookie-parser');
+var fs = require('fs')
 var app = express();
+var cors = require('cors');
+app.use(cors());
 app.use(cookieParser());
-// get all movies
+app.use(express.json())
+app.use(express.static('public'));
+app.use(bodyParser.urlencoded({ extended: true }));
+const storage = multer.diskStorage({
+
+    destination: function (req, file, cb) {
+        cb(null, `./temp-images/`)
+    },
+    filename: function (req, file, cb) {
+      var fileName = file.originalname.slice(0,file.originalname.indexOf("."));
+      var randomString = crypto.randomBytes(20).toString('hex');
+      console.log("random string is: ",randomString)
+      req.body.name = fileName+"-"+randomString+".png"
+      cb(null, req.body.name)
+    }
+  })
+
+const upload = multer({ storage: storage });
+
+// rename profile picture
+// input: session, req obj
+// return: false if could not rename
+// method:
+//      1. temp-image theke profile picture read kore rename korbo user er session diye and save korbo images folder e
+//      2. jodi korte na pari:
+//          2.1. return false
+
+function renameProfilePictureAndSave(session, req){
+    fs.rename(`./temp-images/${req.body.name}`, `./images/${session}.png`, function (error, data){
+        if (error){
+            return false;
+        }
+        return true;
+    })
+}
 
 router.get('/', (req, res)=>{
     console.log("reached / url");
@@ -91,27 +130,30 @@ router.post('/authenticate', getUserWithEmail, (req, res, next)=>{
 
 })
 
-router.post('/register', async (req, res, next)=>{
+router.post('/register', upload.any(), async (req, res, next)=>{
     var firstName = req.body.firstName;
     var lastName = req.body.lastName;
     var email = req.body.email;
     var password = req.body.password;
     console.log("first name is: ",firstName);
-    console.log("first name is: ",lastName);
-    console.log("first name is: ",email);
-    console.log("first name is: ",password);
+    console.log("last name is: ",lastName);
+    console.log("email is: ",email);
+    console.log("passowrd is: ",password);
+    console.log("file is: ", req.body.profilePicture)
     const salt = bcrypt.genSaltSync(10);
     console.log("salt: ",salt);
     const hashedPassword = bcrypt.hashSync(password,salt);
     console.log("hashed pass: ",hashedPassword);
     const saltRounds = 10;
     var session = getSession();
+    renameProfilePictureAndSave(session, req);
     const user = new User({
         firstName: firstName,
         lastName: lastName,
         email: email,
         password: hashedPassword,
         session: session,
+        image: `${session}.png`,
         role: "user"
     });
     try {
