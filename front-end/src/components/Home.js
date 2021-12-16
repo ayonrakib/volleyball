@@ -3,6 +3,7 @@ import Cookies from 'universal-cookie/es6';
 import Navigation from './Navigation';
 import { useHistory } from 'react-router';
 import ValidateUser from './ValidateUser';
+import { Image, Container, Row, Col } from 'react-bootstrap';
 const cookies = new Cookies();
 
  
@@ -22,6 +23,13 @@ export default function Home(){
     return(
         <div>
             <Navigation/>
+            <Container>
+                <Row>
+                    <Col lg = "4">
+                        <Image src = "%PUBLIC_URL%/images/volleyball.png"></Image>
+                    </Col>
+                </Row>
+            </Container>
         </div>
     )
 }
