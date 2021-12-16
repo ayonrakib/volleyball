@@ -5,7 +5,7 @@ require('../db');
 const Poll = require('../models/Poll');
 const User = require('../models/User');
 const file = require('../movies.json');
-var bodyParser = require('body-parser');
+
 const multer = require('multer');
 var util = require('util');
 var url = require('url');
@@ -15,13 +15,9 @@ const crypto = require('crypto');
 const { session } = require('passport');
 var cookieParser = require('cookie-parser');
 var fs = require('fs')
-var app = express();
-var cors = require('cors');
-app.use(cors());
-app.use(cookieParser());
-app.use(express.json())
-app.use(express.static('public'));
-app.use(bodyParser.urlencoded({ extended: true }));
+
+
+
 const storage = multer.diskStorage({
 
     destination: function (req, file, cb) {
@@ -443,6 +439,14 @@ router.post('/save-selection-in-poll-database', getUserWithSession, async (req, 
 //      2. jodi thake, delete kore dibo entry
 //      3. jodi error hoy:
 //          3.1. log korbo error
+
+router.get('/get-profile-picture-url', (req, res) => {
+    console.log("came in get-profile-picture-url method");
+    res.send({
+        data: "https://localhost:8080/images/volleyball.png"
+    })
+})
+
 async function deleteYesVote(voterId, currentPollId){
     try {
         await Poll.updateOne(

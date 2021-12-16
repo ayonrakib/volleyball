@@ -25,9 +25,7 @@ export default function Home(){
             <Navigation/>
             <Container>
                 <Row>
-                    <Col lg = "4">
-                        <Image src = "%PUBLIC_URL%/images/volleyball.png"></Image>
-                    </Col>
+
                 </Row>
             </Container>
         </div>

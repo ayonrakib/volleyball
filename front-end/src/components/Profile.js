@@ -2,8 +2,11 @@
 import Navigation from './Navigation';
 import { Container, Row, Col, Image, Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios';
 import Button from 'react-bootstrap/Button'
 import React, { useRef } from 'react';
+import getProfilePictureURL from '../methods/getProfilePictureMethod';
+import { useState } from 'react';
 // import Cookies from 'universal-cookie/es6';
 // const router = require('../routers/router');
 // const cookies = new Cookies();
@@ -11,12 +14,20 @@ import React, { useRef } from 'react';
 
 export default function Profile(){
     const profilePicture = useRef("")
-
+    const [profilePictureUrl, setProfilePictureUrl] = useState("")
+    if (profilePictureUrl === ""){
+        console.log("came in profilePicture check === block")
+        setProfilePictureUrl(getProfilePictureURL());
+        console.log("return value from getProfilePictureURL method is: ",getProfilePictureURL())
+        console.log("updated profile pic url is: ", profilePictureUrl)
+    }
+    
     function UploadProfilePicture(e, profilePicture){
         e.preventDefault();
-        console.log("upload profile pic!")
-        console.log("profilePicture value: ",profilePicture)
+        // console.log("upload profile pic!")
+        // console.log("profilePicture value: ",profilePicture)
     }
+
     return(
         <div >
             <Navigation/>
@@ -24,7 +35,7 @@ export default function Profile(){
                 <Row>
                     <Col className = "profilePictureBlock" lg = "3">
                         <Row className = "profilePicture">
-                            <Image src = {process.env.PUBLIC_URL + "/images/123.jpg"} roundedCircle></Image>
+                            <Image src = {profilePictureUrl} roundedCircle></Image>
                         </Row>
                         <div>
                             <br></br>
