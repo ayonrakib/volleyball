@@ -316,6 +316,18 @@ router.post('/get-user-with-poll-choice', async (req, res, next) => {
     }
 })
 
+router.post('/get-profile-details',getUserWithSession, (req, res) => {
+    console.log("session in get-profile-details url is: ",req.body.session)
+    console.log("user in get-profile-details url is: ",res.user)
+    res.send({
+        data: {
+            firstName: res.user.firstName,
+            lastName: res.user.lastName,
+            email: res.user.email
+        }
+    })
+})
+
 // save selection in poll db
 // input: req, res, next
 // return: true if saved in db, false if not
