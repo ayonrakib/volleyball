@@ -8,6 +8,9 @@ import React, { useRef } from 'react';
 import getProfilePictureURL from '../methods/getProfilePictureMethod';
 import { useState } from 'react';
 import Cookies from 'universal-cookie/es6';
+import GetFirstNameInput from './FirstnameInput';
+import GetLastNameInput from './LastNameInput';
+import GetEmailInput from './EmailInput';
 // const router = require('../routers/router');
 const cookies = new Cookies();
 
@@ -178,34 +181,20 @@ export default function Profile(){
                     <Col lg="1">
                     </Col>
                     <Col className = "profileDetails" lg = "6">
-                        <>
-                            <Form>
-                                <Form.Group className="mb-3" controlId="formFirstName">
-                                    <Form.Label>First Name</Form.Label>
-                                    <Form.Control type="text" placeholder="First Name" value={firstName} onChange={(e) => setModifiedFirstName(e.target.value)} />
-                                </Form.Group>
-                                <Form.Group className="mb-3" controlId="formLastName">
-                                    <Form.Label>Last Name</Form.Label>
-                                    <Form.Control type="text" placeholder="Last Name" value={lastName} onChange={(e) => setModifiedLastName(e.target.value)}/>
-                                </Form.Group>
-                                <Form.Group className="mb-3" controlId="formBasicEmail">
-                                    <Form.Label>Email address</Form.Label>
-                                    <Form.Control type="email" placeholder="Enter email" readOnly value={email}/>
-                                    <Form.Text className="text-muted">
-                                    We'll never share your email with anyone else.
-                                    </Form.Text>
-                                </Form.Group>
+                        <Form>
+                            <GetFirstNameInput firstName={firstName} />
+                            <GetLastNameInput lastName={lastName} />
+                            <GetEmailInput email = {email} />
 
-                                {/* <Row>
-                                    <Col>
-                                        <Button variant="secondary" type="button" onClick={showEditProfileForm}>
-                                            Edit
-                                        </Button>
-                                    </Col>
-                                </Row> */}
+                            {/* <Row>
+                                <Col>
+                                    <Button variant="secondary" type="button" onClick={showEditProfileForm}>
+                                        Edit
+                                    </Button>
+                                </Col>
+                            </Row> */}
 
-                            </Form>
-                        </>
+                        </Form>
                     </Col>
                 </Row>
                 
