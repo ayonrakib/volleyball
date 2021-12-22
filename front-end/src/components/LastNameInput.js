@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Form } from "react-bootstrap";
 export default function GetLastNameInput(props){
     const [lastName, setLastName] = useState("");
+    console.log("last name parameter in GetLastNameInput component is: ",props.lastName)
     return(
             <>
                 <Form.Group className="mb-3" controlId="formLastName">

@@ -11,6 +11,8 @@ import Cookies from 'universal-cookie/es6';
 import GetFirstNameInput from './FirstnameInput';
 import GetLastNameInput from './LastNameInput';
 import GetEmailInput from './EmailInput';
+import GetFullProfileForm from './FullProfileForm';
+import GetEditProfileForm from './GetEditProfileForm';
 // const router = require('../routers/router');
 const cookies = new Cookies();
 
@@ -24,6 +26,8 @@ export default function Profile(){
     const [email, setEmail] = useState("");
     const [modifiedFirstName, setModifiedFirstName] = useState("");
     const [modifiedLastName, setModifiedLastName] = useState("");
+    const [needToLoadEditProfileForm, setNeedToLoadEditProfileForm] = useState(false);
+    // const [formReloaded, setFormReloaded] = useState(false);
     // const [fullProfileForm, setFullprofileForm] = useState(getFullProfileForm())
     var session = cookies.get('session')
     console.log("state firstName is: ",firstName);
@@ -116,37 +120,62 @@ export default function Profile(){
     //     setFullprofileForm(getFullProfileForm())
     // }
 
-    // function showEditProfileForm(e){
-    //     e.preventDefault();
-    //     console.log("showEditProfileForm button is clicked!")
-    //     console.log("state firstName in showEditProfileForm method is: ",firstName)
-    //     console.log("state lastName in showEditProfileForm method is: ",lastName)
-    //     setFullprofileForm(<>
-    //         <Form onSubmit={editProfile}>
-    //             <Form.Group className="mb-3" controlId="formFirstName">
-    //                 <Form.Label>First Name</Form.Label>
-    //                 <Form.Control type="text" placeholder="First Name" value={firstName} onChange={(e) => setModifiedFirstName(e.target.value)} />
-    //             </Form.Group>
-    //             <Form.Group className="mb-3" controlId="formLastName">
-    //                 <Form.Label>Last Name</Form.Label>
-    //                 <Form.Control type="text" placeholder="Last Name" value={lastName} onChange={(e) => setModifiedLastName(e.target.value)}/>
-    //             </Form.Group>
-    //             <Row>
-    //                 <Col sm="2">
-    //                     <Button variant="primary" type="submit">
-    //                         Save
-    //                     </Button>   
-    //                 </Col>
-    //                 <Col>
-    //                     <Button variant="secondary" type="button" onClick={goBackToFullProfileForm}>
-    //                         Back
-    //                     </Button>
-    //                 </Col>
-    //             </Row>
+    function showEditProfileForm(e){
+        e.preventDefault();
+        console.log("showEditProfileForm button is clicked!")
+        console.log("state firstName in showEditProfileForm method is: ",firstName)
+        console.log("state lastName in showEditProfileForm method is: ",lastName)
+        return(
+            <>
+                <GetFirstNameInput firstName = {""}/>
+                <GetLastNameInput lastName = {""}/>
+            </>
 
-    //         </Form>
-    //     </>)
-    // }
+        )
+        // setFullprofileForm(<>
+        //     <Form onSubmit={editProfile}>
+        //         <Form.Group className="mb-3" controlId="formFirstName">
+        //             <Form.Label>First Name</Form.Label>
+        //             <Form.Control type="text" placeholder="First Name" value={firstName} onChange={(e) => setModifiedFirstName(e.target.value)} />
+        //         </Form.Group>
+        //         <Form.Group className="mb-3" controlId="formLastName">
+        //             <Form.Label>Last Name</Form.Label>
+        //             <Form.Control type="text" placeholder="Last Name" value={lastName} onChange={(e) => setModifiedLastName(e.target.value)}/>
+        //         </Form.Group>
+        //         <Row>
+        //             <Col sm="2">
+        //                 <Button variant="primary" type="submit">
+        //                     Save
+        //                 </Button>   
+        //             </Col>
+        //             <Col>
+        //                 <Button variant="secondary" type="button" onClick={goBackToFullProfileForm}>
+        //                     Back
+        //                 </Button>
+        //             </Col>
+        //         </Row>
+
+        //     </Form>
+        // </>)
+    }
+
+    function changeState(){
+        setNeedToLoadEditProfileForm(true);
+    }
+
+    function getProfileForm(){
+        var profileForm = "";
+        if (!(needToLoadEditProfileForm)) {
+            profileForm = <GetFullProfileForm changeState = {changeState}/>;
+        }
+        else{
+            profileForm = <GetEditProfileForm/>
+        }
+        return profileForm;
+    }
+
+
+
     return(
         <div >
             <Navigation/>
@@ -181,20 +210,22 @@ export default function Profile(){
                     <Col lg="1">
                     </Col>
                     <Col className = "profileDetails" lg = "6">
-                        <Form>
+                        {/* <Form>
                             <GetFirstNameInput firstName={firstName} />
                             <GetLastNameInput lastName={lastName} />
                             <GetEmailInput email = {email} />
 
-                            {/* <Row>
+                            <Row>
                                 <Col>
                                     <Button variant="secondary" type="button" onClick={showEditProfileForm}>
                                         Edit
                                     </Button>
                                 </Col>
-                            </Row> */}
+                            </Row>
 
-                        </Form>
+                        </Form> */}
+                        {getProfileForm()}
+                        
                     </Col>
                 </Row>
                 
