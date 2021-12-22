@@ -1,6 +1,6 @@
 // import UploadProfilePicture from '../methods/uploadProfilePicture';
 import Navigation from './Navigation';
-import { Container, Row, Col, Image, Form } from 'react-bootstrap';
+import { Container, Row, Col, Image, Form, Modal } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import Button from 'react-bootstrap/Button'
@@ -8,11 +8,9 @@ import React, { useRef } from 'react';
 import getProfilePictureURL from '../methods/getProfilePictureMethod';
 import { useState } from 'react';
 import Cookies from 'universal-cookie/es6';
-import GetFirstNameInput from './FirstnameInput';
-import GetLastNameInput from './LastNameInput';
-import GetEmailInput from './EmailInput';
 import GetFullProfileForm from './FullProfileForm';
 import GetEditProfileForm from './GetEditProfileForm';
+import GetModalForBadprofileInputs from './GetModalForBadprofileInputs';
 // const router = require('../routers/router');
 const cookies = new Cookies();
 
@@ -27,6 +25,7 @@ export default function Profile(){
     const [modifiedFirstName, setModifiedFirstName] = useState("");
     const [modifiedLastName, setModifiedLastName] = useState("");
     const [needToLoadEditProfileForm, setNeedToLoadEditProfileForm] = useState(false);
+    
     // const [formReloaded, setFormReloaded] = useState(false);
     // const [fullProfileForm, setFullprofileForm] = useState(getFullProfileForm())
     var session = cookies.get('session')
@@ -110,72 +109,57 @@ export default function Profile(){
         })
     }
 
-    function editProfile(e){
+    function saveEditedProfileInfo(e){
         e.preventDefault();
-        console.log("came in edit profile method")
+        console.log("came in saveEditedProfileInfo method")
         console.log("firstName is: ",modifiedFirstName)
+        console.log("last name is: ",modifiedLastName)
+        axios({
+            method: "POST",
+            url: "http://localhost:8080/save-profile-details",
+            data:{
+                firstName: modifiedFirstName,
+                lastName: modifiedLastName,
+                session: session
+            }
+        }).then(response => {
+            console.log("response from save-edited-profile-info is: ",response.data.data)
+            console.log("error message is: ",response.data.message.errorMessage)
+            if(response.data.message.errorCode === 1000){
+                console.log("Please insert a valid first name!")
+
+            }
+            if(response.data.message.errorCode === 2000){
+                console.log("Please insert a valid last name!")
+            }
+        })
     }
 
-    // function goBackToFullProfileForm(){
-    //     setFullprofileForm(getFullProfileForm())
-    // }
-
-    function showEditProfileForm(e){
-        e.preventDefault();
-        console.log("showEditProfileForm button is clicked!")
-        console.log("state firstName in showEditProfileForm method is: ",firstName)
-        console.log("state lastName in showEditProfileForm method is: ",lastName)
-        return(
-            <>
-                <GetFirstNameInput firstName = {""}/>
-                <GetLastNameInput lastName = {""}/>
-            </>
-
-        )
-        // setFullprofileForm(<>
-        //     <Form onSubmit={editProfile}>
-        //         <Form.Group className="mb-3" controlId="formFirstName">
-        //             <Form.Label>First Name</Form.Label>
-        //             <Form.Control type="text" placeholder="First Name" value={firstName} onChange={(e) => setModifiedFirstName(e.target.value)} />
-        //         </Form.Group>
-        //         <Form.Group className="mb-3" controlId="formLastName">
-        //             <Form.Label>Last Name</Form.Label>
-        //             <Form.Control type="text" placeholder="Last Name" value={lastName} onChange={(e) => setModifiedLastName(e.target.value)}/>
-        //         </Form.Group>
-        //         <Row>
-        //             <Col sm="2">
-        //                 <Button variant="primary" type="submit">
-        //                     Save
-        //                 </Button>   
-        //             </Col>
-        //             <Col>
-        //                 <Button variant="secondary" type="button" onClick={goBackToFullProfileForm}>
-        //                     Back
-        //                 </Button>
-        //             </Col>
-        //         </Row>
-
-        //     </Form>
-        // </>)
-    }
-
-    function changeState(){
-        setNeedToLoadEditProfileForm(true);
+    function toggleNeedToLoadEditProfileFormState(){
+        if(needToLoadEditProfileForm){
+            setNeedToLoadEditProfileForm(false);
+        }
+        else{
+            setNeedToLoadEditProfileForm(true);
+        }
+        
+        console.log("needToLoadEditProfileForm state is: ", needToLoadEditProfileForm)
     }
 
     function getProfileForm(){
         var profileForm = "";
-        if (!(needToLoadEditProfileForm)) {
-            profileForm = <GetFullProfileForm changeState = {changeState}/>;
+        if (needToLoadEditProfileForm === false) {
+            profileForm = <GetFullProfileForm toggleNeedToLoadEditProfileFormState = {toggleNeedToLoadEditProfileFormState} firstName = {firstName} lastName = {lastName} email = {email}/>;
         }
         else{
-            profileForm = <GetEditProfileForm/>
+            profileForm = <GetEditProfileForm toggleNeedToLoadEditProfileFormState = {toggleNeedToLoadEditProfileFormState} firstName = {modifiedFirstName} lastName = {modifiedLastName} saveEditedProfileInfo = {saveEditedProfileInfo}
+                                              setModifiedFirstName = {setModifiedFirstName} setModifiedLastName = {setModifiedLastName}/>
         }
         return profileForm;
     }
 
 
-
+    console.log("lastname before return is: ",lastName)
     return(
         <div >
             <Navigation/>
@@ -210,25 +194,11 @@ export default function Profile(){
                     <Col lg="1">
                     </Col>
                     <Col className = "profileDetails" lg = "6">
-                        {/* <Form>
-                            <GetFirstNameInput firstName={firstName} />
-                            <GetLastNameInput lastName={lastName} />
-                            <GetEmailInput email = {email} />
-
-                            <Row>
-                                <Col>
-                                    <Button variant="secondary" type="button" onClick={showEditProfileForm}>
-                                        Edit
-                                    </Button>
-                                </Col>
-                            </Row>
-
-                        </Form> */}
                         {getProfileForm()}
-                        
+                        <GetModalForBadprofileInputs/>
                     </Col>
                 </Row>
-                
+                       
             </Container>
         </div>
     )

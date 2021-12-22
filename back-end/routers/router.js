@@ -328,6 +328,38 @@ router.post('/get-profile-details',getUserWithSession, (req, res) => {
     })
 })
 
+router.post('/save-profile-details',getUserWithSession, (req, res)=>{
+    console.log("firstName in save-profile-details is: ",req.body.firstName);
+    console.log("lastName in save-profile-details is: ",req.body.lastName);
+    var firstName = req.body.firstName;
+    var lastName = req.body.lastName;
+    if(firstName === ""){
+        res.send({
+            data: false,
+            message: {
+                errorCode: 1000,
+                errorMessage: "Please insert a valid first name!"
+            }
+        })
+    }
+    else if(lastName === ""){
+        res.send({
+            data: false,
+            message: {
+                errorCode: 2000,
+                errorMessage: "Please insert a valid last name!"
+            }
+        })
+    }
+    else{
+        res.send({
+            data:true,
+            message : ""
+        })
+    }
+
+})
+
 // save selection in poll db
 // input: req, res, next
 // return: true if saved in db, false if not
