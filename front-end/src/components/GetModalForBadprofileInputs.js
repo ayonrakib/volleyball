@@ -1,7 +1,7 @@
 import { Modal, Button } from "react-bootstrap";
 import { useState } from "react";
 
-export default function GetModalForBadprofileInputs() {
+export default function GetModalForBadprofileInputs(props) {
     const [show, setShow] = useState(false);
   
     const handleClose = () => setShow(false);
@@ -9,7 +9,7 @@ export default function GetModalForBadprofileInputs() {
   
     return (
       <>
-        <Button variant="primary" onClick={handleShow} style={{display: "inline"}}>
+        <Button ref={props.showModalReference} variant="primary" onClick={handleShow} style={{display: "inline"}}>
           Launch demo modal
         </Button>
   
@@ -17,7 +17,7 @@ export default function GetModalForBadprofileInputs() {
           <Modal.Header closeButton>
             <Modal.Title>Modal heading</Modal.Title>
           </Modal.Header>
-          <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+          <Modal.Body>{props.modalText}</Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
               Close

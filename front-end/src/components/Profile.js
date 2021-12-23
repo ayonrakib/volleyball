@@ -25,7 +25,8 @@ export default function Profile(){
     const [modifiedFirstName, setModifiedFirstName] = useState("");
     const [modifiedLastName, setModifiedLastName] = useState("");
     const [needToLoadEditProfileForm, setNeedToLoadEditProfileForm] = useState(false);
-    
+    const showModalReference = React.createRef();
+    const [modalText, setModalText] = useState("");
     // const [formReloaded, setFormReloaded] = useState(false);
     // const [fullProfileForm, setFullprofileForm] = useState(getFullProfileForm())
     var session = cookies.get('session')
@@ -127,10 +128,13 @@ export default function Profile(){
             console.log("error message is: ",response.data.message.errorMessage)
             if(response.data.message.errorCode === 1000){
                 console.log("Please insert a valid first name!")
-
+                setModalText(response.data.message.errorMessage)
+                showModalReference.current.click()
             }
             if(response.data.message.errorCode === 2000){
                 console.log("Please insert a valid last name!")
+                setModalText(response.data.message.errorMessage)
+                showModalReference.current.click()
             }
         })
     }
@@ -195,7 +199,7 @@ export default function Profile(){
                     </Col>
                     <Col className = "profileDetails" lg = "6">
                         {getProfileForm()}
-                        <GetModalForBadprofileInputs/>
+                        <GetModalForBadprofileInputs showModalReference = {showModalReference} modalText = {modalText}/>
                     </Col>
                 </Row>
                        

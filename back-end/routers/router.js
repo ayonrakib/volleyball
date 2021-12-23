@@ -328,7 +328,7 @@ router.post('/get-profile-details',getUserWithSession, (req, res) => {
     })
 })
 
-router.post('/save-profile-details',getUserWithSession, (req, res)=>{
+router.post('/save-profile-details',getUserWithSession, async (req, res)=>{
     console.log("firstName in save-profile-details is: ",req.body.firstName);
     console.log("lastName in save-profile-details is: ",req.body.lastName);
     var firstName = req.body.firstName;
@@ -352,6 +352,11 @@ router.post('/save-profile-details',getUserWithSession, (req, res)=>{
         })
     }
     else{
+        res.user.firstName = firstName;
+        res.user.lastName = lastName;
+        const updatedUser = await res.user.save()
+                            .catch(error => res.status(400).json({message: "user details could not be updated"}))
+                            .then( () => res.json(updatedUser) )
         res.send({
             data:true,
             message : ""
