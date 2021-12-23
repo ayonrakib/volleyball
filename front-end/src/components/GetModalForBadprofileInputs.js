@@ -2,22 +2,18 @@ import { Modal, Button } from "react-bootstrap";
 import { useState } from "react";
 
 export default function GetModalForBadprofileInputs(props) {
-    const [show, setShow] = useState(false);
+    const [show, setShow] = useState(props.showModal);
   
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-  
+    console.log("modal component loaded!");
+    console.log("props input is: ",props)
     return (
       <>
-        <Button ref={props.showModalReference} variant="primary" onClick={handleShow} style={{display: "inline"}}>
-          Launch demo modal
-        </Button>
-  
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>Modal heading</Modal.Title>
           </Modal.Header>
-          <Modal.Body>{props.modalText}</Modal.Body>
+          <Modal.Body>{props.modalBodyText}</Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
               Close
