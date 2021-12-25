@@ -4,12 +4,13 @@ var file = require('./movies.json');
 const express = require('express');
 const app = express();
 app.use(express.json());
+app.use(express.static('public'))
 const router = express.Router();
 require('dotenv').config();
 const db = require('../back-end/db');
 var routerFile = require('../back-end/routers/router');
 var cors = require('cors');
-app.use(express.static('public'))
+
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 

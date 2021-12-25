@@ -26,7 +26,7 @@ const storage = multer.diskStorage({
     filename: function (req, file, cb) {
       var fileName = file.originalname.slice(0,file.originalname.indexOf("."));
       var randomString = crypto.randomBytes(20).toString('hex');
-      console.log("random string is: ",randomString)
+      // console.log("random string is: ",randomString)
       req.body.name = fileName+"-"+randomString+".png"
       cb(null, req.body.name)
     }
@@ -52,7 +52,7 @@ function renameProfilePictureAndSave(session, req){
 }
 
 router.get('/', (req, res)=>{
-    console.log("reached / url");
+    // console.log("reached / url");
     res.send(file);
     res.end();
 })
@@ -61,19 +61,19 @@ router.get('/get-users', async (req,res) => {
     var adr = 'http://localhost:8080/a/default.htm?year=2017&month=february';
     var q = url.parse(adr, true);
 
-    console.log(q.host); //returns 'localhost:8080'
-    console.log(q.pathname); //returns '/default.htm'
-    console.log(q.search); //returns '?year=2017&month=february'
+    // console.log(q.host); //returns 'localhost:8080'
+    // console.log(q.pathname); //returns '/default.htm'
+    // console.log(q.search); //returns '?year=2017&month=february'
     
 
     var qdata = q.query; //returns an object: { year: 2017, month: 'february' }
-    console.log(qdata)
-    console.log(qdata.month); //returns 'february'
+    // console.log(qdata)
+    // console.log(qdata.month); //returns 'february'
     var options = {
         host: 'google.com',
         path: '/'
     }
-    console.log("random string: ",getSession())
+    // console.log("random string: ",getSession())
     try {
         const users = await User.find();
         res.send(users);
@@ -86,16 +86,16 @@ router.get('/get-users', async (req,res) => {
 router.post('/authenticate', getUserWithEmail, (req, res, next)=>{
     var email = req.body.email;
     var password = req.body.password;
-    console.log("authenticate url is called");
-    console.log("body of request is: ",req.body);
-    console.log("email is: ",req.body.email);
-    console.log("password is: ",req.body.password);
+    // console.log("authenticate url is called");
+    // console.log("body of request is: ",req.body);
+    // console.log("email is: ",req.body.email);
+    // console.log("password is: ",req.body.password);
     if((email != "") && (password != "")){
         if(authenticate(email, password, res.user)){
-            console.log("authenticated in the nodejs authenticate url!");
+            // console.log("authenticated in the nodejs authenticate url!");
             var sessionId = getSession();
             if (assignSessionToUser(res.user, sessionId)) {
-                console.log("users session is: ",res.user.session);
+                // console.log("users session is: ",res.user.session);
                 res.send({
                     data: sessionId,
                     error: ""
@@ -112,7 +112,7 @@ router.post('/authenticate', getUserWithEmail, (req, res, next)=>{
 
         }
         else{
-            console.log("not authenticated in the nodejs authenticate url!");
+            // console.log("not authenticated in the nodejs authenticate url!");
             res.send({
                 data: false,
                 error: ""
@@ -121,7 +121,7 @@ router.post('/authenticate', getUserWithEmail, (req, res, next)=>{
     }
 
     // for(let property in req.body){
-    //     console.log(property);
+    //     // console.log(property);
     // }
 
 })
@@ -131,15 +131,15 @@ router.post('/register', upload.any(), async (req, res, next)=>{
     var lastName = req.body.lastName;
     var email = req.body.email;
     var password = req.body.password;
-    console.log("first name is: ",firstName);
-    console.log("last name is: ",lastName);
-    console.log("email is: ",email);
-    console.log("passowrd is: ",password);
-    console.log("file is: ", req.body.profilePicture)
+    // console.log("first name is: ",firstName);
+    // console.log("last name is: ",lastName);
+    // console.log("email is: ",email);
+    // console.log("passowrd is: ",password);
+    // console.log("file is: ", req.body.profilePicture)
     const salt = bcrypt.genSaltSync(10);
-    console.log("salt: ",salt);
+    // console.log("salt: ",salt);
     const hashedPassword = bcrypt.hashSync(password,salt);
-    console.log("hashed pass: ",hashedPassword);
+    // console.log("hashed pass: ",hashedPassword);
     const saltRounds = 10;
     var session = getSession();
     renameProfilePictureAndSave(session, req);
@@ -172,33 +172,33 @@ router.post('/register', upload.any(), async (req, res, next)=>{
 
 
 router.use('/delete-user',getUserWithEmail, async (req, res, next)=>{
-    console.log("delete user visited");
+    // console.log("delete user visited");
 
     var queryString = url.parse(req.url, true);  
-    // console.log(queryString);
-    console.log("path: ",queryString.path);
-    console.log("pathname: ",queryString.pathname);
-    console.log("id: ",req.query.id);
-    console.log("name: ",req.query.name);
+    // // console.log(queryString);
+    // console.log("path: ",queryString.path);
+    // console.log("pathname: ",queryString.pathname);
+    // console.log("id: ",req.query.id);
+    // console.log("name: ",req.query.name);
     try {
         await res.user.remove();
         res.send({ message: `deleted user` });
     } catch (error) {
-        console.log("user not found")
+        // console.log("user not found")
         res.send({ message: `user not found` });
     }
 })
 
 router.use('/update-user', getUserWithEmail, async (req, res, next)=>{
     var queryString = url.parse(req.url, true);  
-    // console.log(queryString);
-    console.log("path: ",queryString.path);
-    console.log("pathname: ",queryString.pathname);
-    console.log("id: ",req.query.id);
-    console.log("email: ",req.query.email);
-    console.log("firstName: ",queryString.query.firstName);
+    // // console.log(queryString);
+    // console.log("path: ",queryString.path);
+    // console.log("pathname: ",queryString.pathname);
+    // console.log("id: ",req.query.id);
+    // console.log("email: ",req.query.email);
+    // console.log("firstName: ",queryString.query.firstName);
     res.send("visited update user") ;
-    console.log("res.user = ",res.user);
+    // console.log("res.user = ",res.user);
     if((req.query.email != null) && (queryString.query.firstName != null)){
         res.user.firstName = queryString.query.firstName;
     }
@@ -210,10 +210,10 @@ router.use('/update-user', getUserWithEmail, async (req, res, next)=>{
 
 
 router.post('/validate', getUserWithSession, (req, res, next)=>{
-    console.log("came in validate url");
-    console.log("user in validate url is: ",res.user)
+    // console.log("came in validate url");
+    // console.log("user in validate url is: ",res.user)
     // // res.send(true)
-    // console.log(res.user)
+    // // console.log(res.user)
     if(res.user){
         res.send(true);
     }
@@ -223,16 +223,16 @@ router.post('/validate', getUserWithSession, (req, res, next)=>{
 })
 
 router.post('/logout',getUserWithSession, (req, res, next)=>{
-    console.log ("came in logout url");
+    // console.log ("came in logout url");
 
     if (assignSessionToUser(res.user,"")) {
-        console.log("user session has been cleared");
+        // console.log("user session has been cleared");
         res.send({
             data: true,
             error: ""
         })
     } else {
-        console.log("user could not be found in getUserWithSession");
+        // console.log("user could not be found in getUserWithSession");
         res.send({
             data: false,
             error:{
@@ -244,13 +244,13 @@ router.post('/logout',getUserWithSession, (req, res, next)=>{
 })
 
 router.get('/create-poll', async (req, res, next) => {
-    console.log("came inside create poll");
+    // console.log("came inside create poll");
     const poll = new Poll({
         yesVoters:[],
         noVoters: [],
         maybeVoters: []
     });
-    console.log("poll object is: ",poll)
+    // console.log("poll object is: ",poll)
     try{
         const newPoll = await poll.save();
         res.send({
@@ -258,7 +258,7 @@ router.get('/create-poll', async (req, res, next) => {
             error: ""
         })
     }catch(error){
-        console.log(error)
+        // console.log(error)
         res.send({
             data: false,
             error:{
@@ -270,12 +270,12 @@ router.get('/create-poll', async (req, res, next) => {
 })
 
 router.get('/get-all-polls', async (req, res, next) => {
-    console.log("came in get all polls")
+    // console.log("came in get all polls")
     try {
         var polls = await Poll.find({});
-        console.log("all polls are: ",polls)
+        // console.log("all polls are: ",polls)
     } catch (error) {
-        console.log("error is: ",error)
+        // console.log("error is: ",error)
     }
     res.send({
         data: polls,
@@ -284,7 +284,7 @@ router.get('/get-all-polls', async (req, res, next) => {
 })
 
 router.get('/delete-poll', getPoll, async (req, res, next) => {
-    console.log("came in delete poll")
+    // console.log("came in delete poll")
     try{
         await res.poll.remove();
         res.send({
@@ -293,7 +293,7 @@ router.get('/delete-poll', getPoll, async (req, res, next) => {
         })
     }
     catch(error){
-        console.log("poll not found")
+        // console.log("poll not found")
         res.send({
             data: false,
             error:{
@@ -306,10 +306,10 @@ router.get('/delete-poll', getPoll, async (req, res, next) => {
 
 router.post('/get-user-with-poll-choice', async (req, res, next) => {
     var session = req.body.session;
-    console.log("session is get-user-with-poll-choice is: ",req.body.session);
+    // console.log("session is get-user-with-poll-choice is: ",req.body.session);
     try {
         const user = await User.findOne({session: session});
-        console.log("user in get-user-with-poll-choice url is: ",user)
+        // console.log("user in get-user-with-poll-choice url is: ",user)
         res.send(user);
     } catch (error) {
         res.send(null)
@@ -317,8 +317,8 @@ router.post('/get-user-with-poll-choice', async (req, res, next) => {
 })
 
 router.post('/get-profile-details',getUserWithSession, (req, res) => {
-    console.log("session in get-profile-details url is: ",req.body.session)
-    console.log("user in get-profile-details url is: ",res.user)
+    // console.log("session in get-profile-details url is: ",req.body.session)
+    // console.log("user in get-profile-details url is: ",res.user)
     res.send({
         data: {
             firstName: res.user.firstName,
@@ -329,8 +329,8 @@ router.post('/get-profile-details',getUserWithSession, (req, res) => {
 })
 
 router.post('/save-profile-details',getUserWithSession, async (req, res)=>{
-    console.log("firstName in save-profile-details is: ",req.body.firstName);
-    console.log("lastName in save-profile-details is: ",req.body.lastName);
+    // console.log("firstName in save-profile-details is: ",req.body.firstName);
+    // console.log("lastName in save-profile-details is: ",req.body.lastName);
     var firstName = req.body.firstName;
     var lastName = req.body.lastName;
     if(firstName === ""){
@@ -381,27 +381,27 @@ router.post('/save-profile-details',getUserWithSession, async (req, res)=>{
 //      10. true return korbo client ke
 
 router.post('/save-selection-in-poll-database', getUserWithSession, async (req, res, next) => {
-    console.log("came in save-selection-in-poll-database url")
+    // console.log("came in save-selection-in-poll-database url")
     
     var currentPollId = req.body.id;
-    console.log("parents class is: ",currentPollId)
+    // console.log("parents class is: ",currentPollId)
     var pollButtonId = req.body.pollOption;
-    console.log("poll option is: ",pollButtonId)
+    // console.log("poll option is: ",pollButtonId)
     var index = pollButtonId.search("-");
-    console.log("- index is: ",index)
+    // console.log("- index is: ",index)
     var pollChoice = pollButtonId.slice(0,index);
-    console.log("poll choice is: ",pollChoice)
+    // console.log("poll choice is: ",pollChoice)
     var pollIdToChoice = {
         "yesButton" : "yesVoters",
         "noButton" :"noVoters",
         "maybeButton" : "maybeVoters"
     }
     var user = res.user;
-    console.log("user is: ",user)
+    // console.log("user is: ",user)
     var selectedPollChoice = pollIdToChoice[pollChoice];
-    console.log("selected poll choice: ", selectedPollChoice)
+    // console.log("selected poll choice: ", selectedPollChoice)
     var poll = await Poll.findOne({_id:currentPollId});
-    console.log("the poll is: ",poll)
+    // console.log("the poll is: ",poll)
     if((user === null) || (poll === null)){
         res.send({
             data: false,
@@ -427,7 +427,7 @@ router.post('/save-selection-in-poll-database', getUserWithSession, async (req, 
             })
         }
         catch(error){
-            console.log(error)
+            // console.log(error)
         }
     }
     else if(selectedPollChoice === "noVoters"){
@@ -446,7 +446,7 @@ router.post('/save-selection-in-poll-database', getUserWithSession, async (req, 
             })
         }
         catch(error){
-            console.log(error)
+            // console.log(error)
         }
     }
     else if(selectedPollChoice === "maybeVoters"){
@@ -465,7 +465,7 @@ router.post('/save-selection-in-poll-database', getUserWithSession, async (req, 
             })
         }
         catch(error){
-            console.log(error)
+            // console.log(error)
         }
     }
 })
@@ -492,7 +492,7 @@ router.post('/save-selection-in-poll-database', getUserWithSession, async (req, 
 router.get('/get-profile-picture-url', (req, res) => {
     console.log("came in get-profile-picture-url method");
     res.send({
-        data: "https://localhost:8080/images/volleyball.png"
+        data: "http://localhost:8080/images/volleyball.png"
     })
 })
 
@@ -509,7 +509,7 @@ async function deleteYesVote(voterId, currentPollId){
             }
             )
     } catch (error) {
-        console.log("error is: ",error)
+        // console.log("error is: ",error)
     }
 }
 
@@ -534,7 +534,7 @@ async function deleteNoVote(voterId, currentPollId){
             }
             )
     } catch (error) {
-        console.log("error is: ",error)
+        // console.log("error is: ",error)
     }
 }
 
@@ -559,7 +559,7 @@ async function deleteMaybeVote(voterId, currentPollId){
             }
             )
     } catch (error) {
-        console.log("error is: ",error)
+        // console.log("error is: ",error)
     }
 }
 async function getPoll(req, res, next){
@@ -571,15 +571,15 @@ async function getPoll(req, res, next){
     } else {
         id = queryString.query.id;
     }
-    console.log("id in getpoll middleware is: ",id)
+    // console.log("id in getpoll middleware is: ",id)
     try{
         var poll = await Poll.findOne({id: id}).catch(error => console.log(error));
         if(poll !== null){
-            console.log("current poll in getPoll middleware is: ", poll)
+            // console.log("current poll in getPoll middleware is: ", poll)
         }
     }
     catch(error){
-        console.log("found no poll with id "+id)
+        // console.log("found no poll with id "+id)
     }
     res.poll = poll;
     next()
@@ -589,9 +589,9 @@ async function getUser(req, res, next){
     var queryString = url.parse(req.url, true);
     try {
         var user = await User.findById(queryString.query.id).catch(error => console.log(error));
-        console.log("the user is: ",user);
+        // console.log("the user is: ",user);
     } catch (error) {
-        console.log("user not found in get user method");
+        // console.log("user not found in get user method");
     }
     res.user = user;
     next();
@@ -599,10 +599,10 @@ async function getUser(req, res, next){
 
 async function getUserWithSession(req,res,next){
     var session = req.body.session;
-    console.log("session in getUserWithSession is: ",session);
+    // console.log("session in getUserWithSession is: ",session);
     try {
         var user = await User.findOne({session: session});
-        console.log("user in getUserWithSession is: ",user);
+        // console.log("user in getUserWithSession is: ",user);
         if(user === null){
             res.user = null;
         }
@@ -611,7 +611,7 @@ async function getUserWithSession(req,res,next){
         }
         
     } catch (error) {
-        console.log(error)
+        // console.log(error)
     }
     next()
 }
@@ -619,21 +619,21 @@ async function getUserWithSession(req,res,next){
 async function getUserWithEmail(req,res,next){
     var queryString = url.parse(req.url, true);
     var email = req.body.email;
-    // console.log("email in getUserWithEmail: ",email);
-    // console.log("query string email: ",queryString.query.email);
+    // // console.log("email in getUserWithEmail: ",email);
+    // // console.log("query string email: ",queryString.query.email);
     if (email != undefined) {
         email = email;
     } else {
         email = queryString.query.email;
     }
-    console.log("email in getUserWithEmail method is: ",email)
+    // console.log("email in getUserWithEmail method is: ",email)
     try {
         var user = await User.findOne({email: email}).catch(error => console.log(error));
         if(user !== null){
-            console.log("found one user with findone in getUserWithEmail method: ",user);
+            // console.log("found one user with findone in getUserWithEmail method: ",user);
         }
     } catch (error) {
-        console.log("found no user with findone");
+        // console.log("found no user with findone");
     }
     res.user = user;
     next();

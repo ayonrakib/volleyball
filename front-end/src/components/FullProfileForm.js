@@ -33,13 +33,6 @@ export default function GetFullProfileForm(props){
                 </Row>
             </Form>
         </>
-        
-        // <div>
-        //     GetFullProfileForm loaded
-        //     <Button variant="secondary" type="button" onClick={props.changeState}>
-        //         Edit
-        //     </Button>
-        // </div>
 
     )
 }

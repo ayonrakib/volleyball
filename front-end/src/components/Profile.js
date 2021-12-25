@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import Button from 'react-bootstrap/Button'
 import React, { useRef } from 'react';
-import getProfilePictureURL from '../methods/getProfilePictureMethod';
+// import getProfilePictureURL from '../methods/getProfilePictureMethod';
 import { useState } from 'react';
 import Cookies from 'universal-cookie/es6';
 import GetFullProfileForm from './FullProfileForm';
@@ -16,7 +16,7 @@ const cookies = new Cookies();
 
 
 export default function Profile(){
-    console.log("rebuilding dom")
+    // console.log("rebuilding dom")
     const profilePicture = useRef("")
     const [profilePictureUrl, setProfilePictureUrl] = useState("")
     const [firstName, setFirstName] = useState("");
@@ -29,15 +29,12 @@ export default function Profile(){
     const [modalBodyText, setModalBodyText] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [stateForCurrentTime, setStateForCurrentTime] = useState(Date.now());
-    // const [formReloaded, setFormReloaded] = useState(false);
-    // const [fullProfileForm, setFullprofileForm] = useState(getFullProfileForm())
     var session = cookies.get('session')
-    console.log("state firstName is: ",firstName);
-    console.log("state lastName is: ",lastName)
+    // console.log("state firstName is: ",firstName);
+    // console.log("state lastName is: ",lastName)
     // const [password, setPassword] = useState("");
     if (profilePictureUrl === ""){
         console.log("came in profilePicture check === block")
-        setProfilePictureUrl(getProfilePictureURL());
         console.log("return value from getProfilePictureURL method is: ",getProfilePictureURL())
         console.log("updated profile pic url is: ", profilePictureUrl)
     }
@@ -47,49 +44,27 @@ export default function Profile(){
         // console.log("upload profile pic!")
         // console.log("profilePicture value: ",profilePicture)
     }
+    
+    function getProfilePictureURL(){
+        console.log("came in getProfilePictureURL method")
+        axios({
+            method: "GET",
+            url: "http://localhost:8080/get-profile-picture-url",
+            data: ""
+        }).then(response => {
+            console.log("profile picture url from getProfilePictureURL is: ",response.data.data)
+            if(profilePictureUrl === ""){
+                setProfilePictureUrl(response.data.data)
+            }
+        })
+    }
 
     getProfileDetails()
 
-    // function getFullProfileForm(){
-    //     console.log("getFullProfileForm called")
-    //     console.log("state firstName in getFullProfileForm is: ",firstName)
-    //     console.log("state lastName in getFullProfileForm is: ",lastName)
-    //     return(
-    //         <>
-    //             <Form>
-    //                 <Form.Group className="mb-3" controlId="formFirstName">
-    //                     <Form.Label>First Name</Form.Label>
-    //                     <Form.Control type="text" placeholder="First Name" value={firstName} onChange={(e) => setModifiedFirstName(e.target.value)} />
-    //                 </Form.Group>
-    //                 <Form.Group className="mb-3" controlId="formLastName">
-    //                     <Form.Label>Last Name</Form.Label>
-    //                     <Form.Control type="text" placeholder="Last Name" value={lastName} onChange={(e) => setModifiedLastName(e.target.value)}/>
-    //                 </Form.Group>
-    //                 <Form.Group className="mb-3" controlId="formBasicEmail">
-    //                     <Form.Label>Email address</Form.Label>
-    //                     <Form.Control type="email" placeholder="Enter email" readOnly value={email}/>
-    //                     <Form.Text className="text-muted">
-    //                     We'll never share your email with anyone else.
-    //                     </Form.Text>
-    //                 </Form.Group>
-
-    //                 <Row>
-    //                     <Col>
-    //                         <Button variant="secondary" type="button" onClick={showEditProfileForm}>
-    //                             Edit
-    //                         </Button>
-    //                     </Col>
-    //                 </Row>
-
-    //             </Form>
-    //         </>
-    //     )
-    // }
-
     function getProfileDetails(){
-        console.log("came in getProfileDetails method");
+        // console.log("came in getProfileDetails method");
         var session = cookies.get('session');
-        console.log("session is: ",session)
+        // console.log("session is: ",session)
         axios({
             method: "POST",
             url: "http://localhost:8080/get-profile-details",
@@ -97,9 +72,9 @@ export default function Profile(){
                 session: session
             }
         }).then(response => {
-            console.log("firstname response from get-profile-details url is: ",response.data.data.firstName)
-            console.log("lastName response from get-profile-details url is: ",response.data.data.lastName)
-            console.log("email response from get-profile-details url is: ",response.data.data.email)
+            // console.log("firstname response from get-profile-details url is: ",response.data.data.firstName)
+            // console.log("lastName response from get-profile-details url is: ",response.data.data.lastName)
+            // console.log("email response from get-profile-details url is: ",response.data.data.email)
             if (firstName === ""){
                 setFirstName(response.data.data.firstName)
             }
@@ -114,9 +89,9 @@ export default function Profile(){
 
     function saveEditedProfileInfo(e){
         e.preventDefault();
-        console.log("came in saveEditedProfileInfo method")
-        console.log("firstName is: ",modifiedFirstName)
-        console.log("last name is: ",modifiedLastName)
+        // console.log("came in saveEditedProfileInfo method")
+        // console.log("firstName is: ",modifiedFirstName)
+        // console.log("last name is: ",modifiedLastName)
         axios({
             method: "POST",
             url: "http://localhost:8080/save-profile-details",
@@ -126,16 +101,16 @@ export default function Profile(){
                 session: session
             }
         }).then(response => {
-            console.log("response from save-edited-profile-info is: ",response.data.data)
-            console.log("error message is: ",response.data.message.errorMessage)
+            // console.log("response from save-edited-profile-info is: ",response.data.data)
+            // console.log("error message is: ",response.data.message.errorMessage)
             if(response.data.message.errorCode === 1000){
-                console.log("Please insert a valid first name!")
+                // console.log("Please insert a valid first name!")
                 setModalBodyText(response.data.message.errorMessage)
                 setShowModal(true);
                 setStateForCurrentTime(Date.now())
             }
             if(response.data.message.errorCode === 2000){
-                console.log("Please insert a valid last name!")
+                // console.log("Please insert a valid last name!")
                 setModalBodyText(response.data.message.errorMessage)
                 setShowModal(true);
                 setStateForCurrentTime(Date.now())
@@ -151,7 +126,7 @@ export default function Profile(){
             setNeedToLoadEditProfileForm(true);
         }
         
-        console.log("needToLoadEditProfileForm state is: ", needToLoadEditProfileForm)
+        // console.log("needToLoadEditProfileForm state is: ", needToLoadEditProfileForm)
     }
 
     function getProfileForm(){
@@ -167,14 +142,14 @@ export default function Profile(){
     }
 
 
-    console.log("showModal state before return is: ",showModal)
+    // console.log("showModal state before return is: ",showModal)
     return(
         <div >
             <Navigation/>
             <Container className = "profilePage">
                 <Row>
                     <Col className = "profilePictureBlock" lg = "3">
-                        <Row className = "profilePicture">
+                        <Row className = "profilePicture" ref={profilePicture}>
                             <Image src = {profilePictureUrl} roundedCircle></Image>
                         </Row>
                         <div>
