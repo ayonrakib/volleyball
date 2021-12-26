@@ -333,6 +333,15 @@ router.post('/save-profile-details',getUserWithSession, async (req, res)=>{
     // console.log("lastName in save-profile-details is: ",req.body.lastName);
     var firstName = req.body.firstName;
     var lastName = req.body.lastName;
+    if((firstName === "") && (lastName === "")){
+        res.send({
+            data : false,
+            message : {
+                errorCode : 500,
+                errorMessage : "Please insert a valid first and last name!"
+            }
+        })
+    }
     if(firstName === ""){
         res.send({
             data: false,
@@ -354,13 +363,22 @@ router.post('/save-profile-details',getUserWithSession, async (req, res)=>{
     else{
         res.user.firstName = firstName;
         res.user.lastName = lastName;
-        const updatedUser = await res.user.save()
-                            .catch(error => res.status(400).json({message: "user details could not be updated"}))
-                            .then( () => res.json(updatedUser) )
-        res.send({
-            data:true,
-            message : ""
-        })
+        const updatedUser = await res.user.save().catch(error => console.log(error));
+        if((updatedUser.firstName === firstName) && (updatedUser.lastName === lastName)){
+            res.send({
+                data:true,
+                message : ""
+            })
+        }
+        else{
+            res.send({
+                data:false,
+                message : {
+                    errorCode: 3000,
+                    errorMessage: "User could not be updated!"
+                }
+            })
+        }
     }
 
 })

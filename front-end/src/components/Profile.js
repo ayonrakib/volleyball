@@ -17,7 +17,8 @@ const cookies = new Cookies();
 
 export default function Profile(){
     // console.log("rebuilding dom")
-    const profilePicture = useRef("")
+    const profilePictureBlock = useRef("");
+    const [profilePicture, setProfilePicture] = useState("");
     const [profilePictureUrl, setProfilePictureUrl] = useState("")
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -29,7 +30,10 @@ export default function Profile(){
     const [modalBodyText, setModalBodyText] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [stateForCurrentTime, setStateForCurrentTime] = useState(Date.now());
+    const [needToReloadPage, setNeedToReloadPage] = useState(false);
     var session = cookies.get('session')
+    // var viewportHeight = window.innerHeight;
+    // console.log("viewport height is: ",viewportHeight)
     // console.log("state firstName is: ",firstName);
     // console.log("state lastName is: ",lastName)
     // const [password, setPassword] = useState("");
@@ -38,11 +42,37 @@ export default function Profile(){
         console.log("return value from getProfilePictureURL method is: ",getProfilePictureURL())
         console.log("updated profile pic url is: ", profilePictureUrl)
     }
-    
-    function UploadProfilePicture(e, profilePicture){
+
+    function setProfilePictureInProfilePicState(e){
         e.preventDefault();
-        // console.log("upload profile pic!")
-        // console.log("profilePicture value: ",profilePicture)
+        console.log("arrived in setProfilePictureInProfilePicState method!");
+        console.log("e.target.files object is: ",e.target.files)
+        setProfilePicture(e.target.files[0])
+        console.log("profile pic state in setProfilePictureInProfilePicState method is: ",profilePicture)
+    }
+    
+    function UploadProfilePicture(e){
+        e.preventDefault();
+        console.log("arrived in UploadProfilePicture!")
+        console.log("profilePicture value: ",profilePicture)
+        // axios({
+        //     method: "POST",
+        //     headers:{
+        //         'Content-type': "multipart/form-data"
+        //     },
+        //     url: "http://localhost:8080/save-profile-picture"
+        // }).then(response => {
+        //     console.log(response.data)
+        // })
+    }
+
+    function showProfilePictureInModal(e){
+        e.preventDefault();
+        // console.log("came in showProfilePictureInModal method");
+        setModalBodyText(<Image className="modalProfilePicutre" src={profilePictureUrl} roundedCircle/>);
+        setShowModal(true);
+        setStateForCurrentTime(Date.now())
+        
     }
     
     function getProfilePictureURL(){
@@ -101,8 +131,13 @@ export default function Profile(){
                 session: session
             }
         }).then(response => {
-            // console.log("response from save-edited-profile-info is: ",response.data.data)
-            // console.log("error message is: ",response.data.message.errorMessage)
+            console.log("response from save-edited-profile-info is: ",response.data.data)
+            console.log("error message is: ",response.data.message.errorMessage)
+            if(response.data.message.errorCode === 500){
+                setModalBodyText(response.data.message.errorMessage);
+                setShowModal(true);
+                setStateForCurrentTime(Date.now())
+            }
             if(response.data.message.errorCode === 1000){
                 // console.log("Please insert a valid first name!")
                 setModalBodyText(response.data.message.errorMessage)
@@ -114,6 +149,12 @@ export default function Profile(){
                 setModalBodyText(response.data.message.errorMessage)
                 setShowModal(true);
                 setStateForCurrentTime(Date.now())
+            }
+            if(response.data.data){
+                setModalBodyText("User successfully updated!")
+                setShowModal(true);
+                setStateForCurrentTime(Date.now())
+                setNeedToReloadPage(true)
             }
         })
     }
@@ -149,7 +190,7 @@ export default function Profile(){
             <Container className = "profilePage">
                 <Row>
                     <Col className = "profilePictureBlock" lg = "3">
-                        <Row className = "profilePicture" ref={profilePicture}>
+                        <Row className = "profilePicture" onClick={(e) => showProfilePictureInModal(e)}>
                             <Image src = {profilePictureUrl} roundedCircle></Image>
                         </Row>
                         <div>
@@ -158,15 +199,15 @@ export default function Profile(){
                         <Row>
                             <Col lg = "4">
                             </Col>
-                            <input ref  = { profilePicture } type="file" name = "html input"/>
-                            <Col lg = "4">
+                            {/* <input ref  = { profilePictureBlock } type="file" name = "html input"/> */}
+                            <Col lg = "5">
                                 <Form>
-                                    <Form.Group  controlId = "profilePicture" className = "profilePicture" style = {{"display": "block"}}>
+                                    <Form.Group  controlId = "formFile" className = "mb-3" style = {{"display": "block"}} onChange={setProfilePictureInProfilePicState}>
                                         <Form.Label>Please upload profile picutre</Form.Label>
                                         <Form.Control type = "file"/>
                                     </Form.Group>
                                    
-                                    <Button variant = "primary" onClick = {(e, profilePicture) => UploadProfilePicture(e, profilePicture)}> Upload </Button>
+                                    <Button variant = "primary" onClick = {(e) => UploadProfilePicture(e)}> Upload </Button>
                                 </Form>
                             </Col>
                             <Col lg = "4">
@@ -178,7 +219,7 @@ export default function Profile(){
                     </Col>
                     <Col className = "profileDetails" lg = "6">
                         {getProfileForm()}
-                        <GetModalForBadprofileInputs showModal = {showModal} modalBodyText = {modalBodyText} key = {stateForCurrentTime}/>
+                        <GetModalForBadprofileInputs showModal = {showModal} modalBodyText = {modalBodyText} needToReloadPage={needToReloadPage} key = {stateForCurrentTime}/>
                     </Col>
                 </Row>
                        

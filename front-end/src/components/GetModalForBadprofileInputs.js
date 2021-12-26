@@ -4,23 +4,27 @@ import { useState } from "react";
 export default function GetModalForBadprofileInputs(props) {
     const [show, setShow] = useState(props.showModal);
   
-    const handleClose = () => setShow(false);
-    console.log("modal component loaded!");
-    console.log("props input is: ",props)
+    const handleClose = () =>{
+      setShow(false);
+      if(props.needToReloadPage){
+        window.location.reload()
+      }
+      
+    } 
+    // console.log("modal component loaded!");
+    // console.log("props input is: ",props)
     return (
       <>
-        <Modal show={show} onHide={handleClose}>
+        <Modal show={show} onHide={handleClose} backdrop="static" keyboard = {false}>
           <Modal.Header closeButton>
-            <Modal.Title>Modal heading</Modal.Title>
+
           </Modal.Header>
-          <Modal.Body>{props.modalBodyText}</Modal.Body>
+          <Modal.Body className="modalProfilePicutreBlock">{props.modalBodyText}</Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
+            <Button variant="primary" onClick={handleClose}>
               Close
             </Button>
-            <Button variant="primary" onClick={handleClose}>
-              Save Changes
-            </Button>
+
           </Modal.Footer>
         </Modal>
       </>

@@ -125,3 +125,12 @@
 .profilePictureBlock{
   text-align: right;
 }
+
+.modalProfilePicutre{
+  height: 150px;
+  width: 150px;
+}
+
+.modalProfilePicutreBlock{
+  text-align: center;
+}
