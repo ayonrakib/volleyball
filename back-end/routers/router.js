@@ -14,21 +14,24 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const { session } = require('passport');
 var cookieParser = require('cookie-parser');
-var fs = require('fs')
-
-
+var fs = require('fs');
 
 const storage = multer.diskStorage({
 
     destination: function (req, file, cb) {
         cb(null, `./temp-images/`)
+        console.log("came in destination method!")
     },
     filename: function (req, file, cb) {
+    //   console.log("req.body is: ",req.body)
       var fileName = file.originalname.slice(0,file.originalname.indexOf("."));
+      console.log("fileName in multer library is: ",fileName)
       var randomString = crypto.randomBytes(20).toString('hex');
-      // console.log("random string is: ",randomString)
+      console.log("random string is: ",randomString)
       req.body.name = fileName+"-"+randomString+".png"
+      console.log("req.body.name is: ",req.body.name)
       cb(null, req.body.name)
+      console.log("successfully saved file")
     }
   })
 
@@ -43,6 +46,7 @@ const upload = multer({ storage: storage });
 //          2.1. return false
 
 function renameProfilePictureAndSave(session, req){
+    console.log("came in renameProfilePictureAndSave method!")
     fs.rename(`./temp-images/${req.body.name}`, `./images/${session}.png`, function (error, data){
         if (error){
             return false;
@@ -511,6 +515,15 @@ router.get('/get-profile-picture-url', (req, res) => {
     console.log("came in get-profile-picture-url method");
     res.send({
         data: "http://localhost:8080/images/volleyball.png"
+    })
+})
+
+router.post('/save-profile-picture', upload.single('profilePicture'), (req, res) => {
+    console.log("arrived in save-profile-picutre url!");
+    console.log("the file name with which the file was saved in save-profile-picture url is: ",req.body.name)
+    res.send({
+        data: true,
+        message: ""
     })
 })
 

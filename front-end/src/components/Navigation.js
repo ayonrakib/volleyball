@@ -5,7 +5,7 @@ import { useHistory } from "react-router";
 
 export default function Navigation(){
   const history = useHistory()
-  console.log("current history is: ",history);
+  // console.log("current history is: ",history);
     return (
       <div>
         

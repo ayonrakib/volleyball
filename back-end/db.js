@@ -12,5 +12,5 @@ mongoose.connect(process.env.DATABASE_URL,{ useNewUrlParser: true });
 
 const db = mongoose.connection;
 
-db.on("open", () => console.log("connection established"));
-db.on("error", () => console.log("failed to connect to db"));
+db.on("open", () => console.log("connection with mongodb established!"));
+db.on("error", () => console.log("failed to connect to db!"));

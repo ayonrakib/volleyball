@@ -8,7 +8,7 @@ import ValidateUser from './ValidateUser';
 import UnControlledToggleButtons from './UnControlledToggleButtons';
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSun, faCloud } from '@fortawesome/free-solid-svg-icons'
+import { faSun, faCloud, faCoffee } from '@fortawesome/free-solid-svg-icons'
 import Button from 'react-bootstrap/Button';
 var _ = require('lodash')
 
@@ -71,13 +71,13 @@ export default function Poll(){
     const [weatherIcon, setWeatherIcon] = useState("");
     const [pollData, setpollData] = useState([]);
     var daysInAWeek = {
+        0 : "Sunday",
         1 : "Monday",
         2 : "Tuesday",
         3 : "Wednesday",
         4 : "Thursday",
         5 : "Friday",
-        6 : "Saturday",
-        7 : "Sunday"
+        6 : "Saturday"
     }
     var monthsInAYear = {
         0 : "January",
@@ -120,6 +120,9 @@ export default function Poll(){
         }
         if((weatherText === "overcast clouds") && (weatherIcon === "")){
             // setWeatherIcon(<FontAwesomeIcon icon={["fas", "sun"]} />)
+        }
+        if((weatherText === "few clouds") && (weatherIcon === "")){
+            setWeatherIcon(<FontAwesomeIcon icon="sun" />)
         }
         console.log("the temp in F is: ",tempInFahrenheit);
     })

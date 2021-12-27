@@ -55,15 +55,19 @@ export default function Profile(){
         e.preventDefault();
         console.log("arrived in UploadProfilePicture!")
         console.log("profilePicture value: ",profilePicture)
-        // axios({
-        //     method: "POST",
-        //     headers:{
-        //         'Content-type': "multipart/form-data"
-        //     },
-        //     url: "http://localhost:8080/save-profile-picture"
-        // }).then(response => {
-        //     console.log(response.data)
-        // })
+        var formData = new FormData();
+        formData.append("profilePicture",profilePicture);
+        formData.append("session",session)
+        axios({
+            method: 'POST',
+            headers:{
+                'Content-Type': 'multipart/form-data'
+            },
+            url: "http://localhost:8080/save-profile-picture",
+            data: formData
+        }).then(response => {
+            console.log(response.data)
+        })
     }
 
     function showProfilePictureInModal(e){

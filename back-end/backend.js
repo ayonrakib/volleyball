@@ -20,7 +20,7 @@ app.use(cors());
 const User = require('../back-end/models/User');
 const { use } = require('../back-end/routers/router');
 
-console.log("hello world"); 
+console.log("Server started at 8080 port!"); 
 
 app.use('/',routerFile);
 
