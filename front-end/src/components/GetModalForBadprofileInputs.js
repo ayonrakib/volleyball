@@ -6,10 +6,7 @@ export default function GetModalForBadprofileInputs(props) {
   
     const handleClose = () =>{
       setShow(false);
-      if(props.needToReloadPage){
-        window.location.reload()
-      }
-      
+      // props.toggleNeedToLoadEditProfileFormState()
     } 
     // console.log("modal component loaded!");
     // console.log("props input is: ",props)

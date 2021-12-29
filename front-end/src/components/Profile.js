@@ -158,7 +158,7 @@ export default function Profile(){
                 setModalBodyText("User successfully updated!")
                 setShowModal(true);
                 setStateForCurrentTime(Date.now())
-                setNeedToReloadPage(true)
+                toggleNeedToLoadEditProfileFormState()
             }
         })
     }
@@ -180,7 +180,7 @@ export default function Profile(){
             profileForm = <GetFullProfileForm toggleNeedToLoadEditProfileFormState = {toggleNeedToLoadEditProfileFormState} firstName = {firstName} lastName = {lastName} email = {email}/>;
         }
         else{
-            profileForm = <GetEditProfileForm toggleNeedToLoadEditProfileFormState = {toggleNeedToLoadEditProfileFormState} firstName = {modifiedFirstName} lastName = {modifiedLastName} saveEditedProfileInfo = {saveEditedProfileInfo}
+            profileForm = <GetEditProfileForm toggleNeedToLoadEditProfileFormState = {toggleNeedToLoadEditProfileFormState} firstName = {firstName} lastName = {lastName} saveEditedProfileInfo = {saveEditedProfileInfo}
                                               setModifiedFirstName = {setModifiedFirstName} setModifiedLastName = {setModifiedLastName}/>
         }
         return profileForm;
