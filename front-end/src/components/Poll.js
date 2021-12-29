@@ -8,7 +8,7 @@ import ValidateUser from './ValidateUser';
 import UnControlledToggleButtons from './UnControlledToggleButtons';
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSun, faCloud, faCoffee } from '@fortawesome/free-solid-svg-icons'
+import { faSun, faCloud, faCoffee, faTimes, faSmog } from '@fortawesome/free-solid-svg-icons'
 import Button from 'react-bootstrap/Button';
 var _ = require('lodash')
 
@@ -67,7 +67,7 @@ export default function Poll(){
     ValidateUser()
     console.log("rendering poll component")
     const [tempInFahrenheit, setTempInFahrenheit] = useState(0);
-    const [weatherText, seatWeatherText] = useState("");
+    const [weatherText, setWeatherText] = useState("");
     const [weatherIcon, setWeatherIcon] = useState("");
     const [pollData, setpollData] = useState([]);
     var daysInAWeek = {
@@ -112,7 +112,7 @@ export default function Poll(){
             setTempInFahrenheit(Math.ceil((tempInKelvin - 273) * (9/5)) + 32);
         }
         if(weatherText === ""){
-            seatWeatherText(response.data.weather[0].description);
+            setWeatherText(response.data.weather[0].description);
         }
         
         if((weatherText === "clear sky") && (weatherIcon === "")){
@@ -123,6 +123,9 @@ export default function Poll(){
         }
         if((weatherText === "few clouds") && (weatherIcon === "")){
             setWeatherIcon(<FontAwesomeIcon icon="sun" />)
+        }
+        if((weatherText === "mist") && (weatherIcon === "")){
+            setWeatherIcon(<FontAwesomeIcon icon={faSmog} />)
         }
         console.log("the temp in F is: ",tempInFahrenheit);
     })
@@ -138,15 +141,30 @@ export default function Poll(){
         }).then(response => {
             console.log("id of the poll is: ",response.data.data._id);
         })
+        window.location.reload()
+    }
+
+    function deletePoll(e, currentPollId){
+        console.log("came in deletePoll method with pollId: ",currentPollId);
     }
 
     function getPollJSX(props){
+        console.log("this object in getpolljsx is: ",this)
+        var currentPollId = props.pollId;
+        console.log("currentPollId in getPollJSX method: ",currentPollId)
         return (
             <div key = {Math.random()} className = "poll">
                 <div id = {props.pollId} className = "pollBackground font-white">
-                    <div className = "font-white">
+                    <div >
+                        {/* <FontAwesomeIcon icon={faTimes} onClick={() => console.log()}/> */}
+                        <p onClick={function (){ console.log(this) } }>
+                            x
+                        </p>
+                    </div>
+                    <div className = "font-white matchLocationBlock">
                         {props.currentDay}, {props.currentMonth} {props.currentDate} at Cedar Park
                     </div>
+
                     <div className = "matchType font-white">
                         Friendly match
                     </div>
@@ -195,27 +213,20 @@ export default function Poll(){
     }
     console.log("polls are: ",polls)
     if (_.isEqual(pollData,[])) {
-        return(
+        polls = ""
+    } 
+    return(
+        <div>
+            <Navigation/>
+            {polls}
             <div className = "poll">
                 <Button variant = "primary" onClick = {(e) => createPoll(e)}>
                     Create Poll
                 </Button>
             </div>
-        )
-
-    } else {
-        return(
-            <div>
-                <Navigation/>
-                {polls}
-                <div className = "poll">
-                    <Button variant = "primary" onClick = {(e) => createPoll(e)}>
-                        Create Poll
-                    </Button>
-                </div>
-                
-            </div>
-        )
-    }
+            
+        </div>
+    )
+    
 
 }

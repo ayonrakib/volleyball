@@ -10,6 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { faCheckSquare, faCoffee, faSun } from '@fortawesome/free-solid-svg-icons'
+import PollList from './components/PollList';
 
 library.add(fab, faCheckSquare, faCoffee, faSun)
 
@@ -33,7 +34,7 @@ export default function App() {
                       <CreateUser/>
                     </Route>
                     <Route exact path = "/poll"> 
-                      <Poll/>
+                      <PollList/>
                     </Route>
                     <Route exact path = "/announcements"> 
                       <Announcements/>
