@@ -2,12 +2,16 @@
 import { Form, Row, Col, Button } from "react-bootstrap";
 
 export default function GetEditProfileForm(props){
+    function setEditedFirstName(e){
+        console.log("came in setEditedFirstName method!");
+        console.log("the input from user is: ", e.target.value)
+    }
     return (
             <>
                 <Form onSubmit={props.saveEditedProfileInfo}>
                     <Form.Group className="mb-3" controlId="formFirstName">
                         <Form.Label>First Name</Form.Label>
-                        <Form.Control type="text" placeholder="First Name" onChange={(e) => props.setModifiedFirstName(e.target.value)} value={props.firstName} />
+                        <Form.Control type="text" placeholder="First Name" onChange={(e) => setEditedFirstName(e)} value={props.firstName} />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formLastName">
                         <Form.Label>Last Name</Form.Label>

@@ -5,14 +5,16 @@ import axios from "axios";
 import { useState } from "react";
 import { Form, Button, Row, Col, Container } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSmog } from "@fortawesome/free-solid-svg-icons";
+import { faSmog, faCross } from "@fortawesome/free-solid-svg-icons";
+var _ = require('lodash')
 
 export default function PollList(){
     ValidateUser();
-    const [polls, setPolls] = useState("");
-    const [tempInFahrenheit, setTempInFahrenheit] = useState("");
+    // const [polls, setPolls] = useState("");
+    const [tempInFahrenheit, setTempInFahrenheit] = useState(0);
     const [weatherText, setWeatherText] = useState("");
     const [weatherIcon, setWeatherIcon] = useState("");
+    const [pollData, setpollData] = useState([]);
     var daysInAWeek = {
         0 : "Sunday",
         1 : "Monday",
@@ -42,6 +44,9 @@ export default function PollList(){
     var currentDay = daysInAWeek[today.getDay()];
     var currentMonth = monthsInAYear[today.getMonth()];
     var currentDate = today.getDate();
+    console.log("current date is: ",currentDate)
+    console.log("current month is: ",currentMonth)
+    console.log("current day is: ",currentDay)
     axios({
         method: 'GET',
         url: "https://api.openweathermap.org/data/2.5/weather?q=Austin&appid=1b6a9c43f4c7125af9f430ff79f20599"
@@ -68,9 +73,66 @@ export default function PollList(){
         }
         console.log("the temp in F is: ",tempInFahrenheit);
     })
+    function createPoll(e){
+        e.preventDefault();
+        console.log("id of the create poll button is: ",e.target.id);
+        axios({
+            method: "GET",
+            url: "http://localhost:8080/create-poll",
+            data:{
+                data: ""
+            }
+        }).then(response => {
+            console.log("id of the poll is: ",response.data.data._id);
+        })
+        window.location.reload()
+    }
+
+    function deletePoll(currentPollId){
+        console.log("came in deletePoll method with pollId: ",currentPollId);
+    }
+    var polls = [];
+    axios({
+        method: "GET",
+        url: "http://localhost:8080/get-all-polls",
+        data:""
+    }).then(response => {
+        console.log("all polls are: ",response.data)
+        if(!(_.isEqual(pollData, response.data.data))){
+            setpollData(response.data.data)
+        }
+    })
+    for(var pollIndex = 0; pollIndex < pollData.length; pollIndex++){
+        console.log("current poll is: ",pollData[pollIndex])
+        console.log("pollid being sent in props is: ",`${pollData[pollIndex]._id}`);
+        
+        var props = {
+                        key: Math.random(),
+                        
+                        pollId : `${pollData[pollIndex]._id}`,
+                        currentDay : `${currentDay}`,
+                        currentMonth: `${currentMonth}`,
+                        currentDate : `${currentDate}`,
+                        weatherIcon : weatherIcon,
+                        tempInFahrenheit : `${tempInFahrenheit}`,
+                        weatherText : `${weatherText}`
+                    }
+        polls.push(<Poll props = {props} deleteCallback = {deletePoll}/>);
+    }
+    console.log("polls are: ",polls)
+    if (_.isEqual(pollData,[])) {
+        polls = ""
+    } 
     return(
             <div>
+                
                 <Navigation/>
+                {polls}
+                <div className = "poll">
+                    <Button variant = "primary" onClick = {(e) => createPoll(e)}>
+                        Create Poll
+                    </Button>
+                </div>
             </div>
     )
 }
