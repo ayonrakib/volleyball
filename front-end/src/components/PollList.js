@@ -15,6 +15,7 @@ export default function PollList(){
     const [weatherText, setWeatherText] = useState("");
     const [weatherIcon, setWeatherIcon] = useState("");
     const [pollData, setpollData] = useState([]);
+    const [needToReloadPolls, setNeedToReloadPolls] = useState(false);
     var daysInAWeek = {
         0 : "Sunday",
         1 : "Monday",
