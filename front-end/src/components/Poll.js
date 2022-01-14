@@ -10,6 +10,7 @@ import UnControlledToggleButtons from './UnControlledToggleButtons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { Button } from 'react-bootstrap';
+import axios from 'axios';
 // import Button from 'react-bootstrap/Button';
 // var _ = require('lodash')
 
@@ -72,6 +73,14 @@ export default function Poll(props){
 
     function showVoters(){
         console.log("arrived in showVoters method!")
+        console.log("the poll id of the current show voters poll is: ",props.props.pollId)
+        axios({
+            method: "POST",
+            url: "http://localhost:8080/show-voters",
+            data: props.props.pollId
+        }).then(response => {
+            console.log("response from show voters url is: ",response.data)
+        })
     }
 
 
