@@ -1,10 +1,6 @@
-import { useState } from "react";
-import { Form, Button, Row, Col, Container } from "react-bootstrap";
+import { Button, Row, Col, Container } from "react-bootstrap";
 
 export default function GetFullProfileForm(props){
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [email, setEmail] = useState("");
     return(
         <>
                 {/* <Form.Group className="mb-3" controlId="formFirstName">

@@ -3,7 +3,6 @@ import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import Home from './components/Home';
 import Login from './components/Login';
 import CreateUser from './components/Create-User';
-import Poll from './components/Poll';
 import Profile from './components/Profile'
 import Announcements from './components/Announcements';
 import 'bootstrap/dist/css/bootstrap.min.css';

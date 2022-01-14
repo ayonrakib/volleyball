@@ -9,8 +9,9 @@ import UnControlledToggleButtons from './UnControlledToggleButtons';
 // import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { Button } from 'react-bootstrap';
 // import Button from 'react-bootstrap/Button';
-var _ = require('lodash')
+// var _ = require('lodash')
 
 // method Poll
 // return: jodi kono poll na thake, create poll button return. noile poll gula return.
@@ -65,100 +66,27 @@ var _ = require('lodash')
 //          22.3. create poll button return
 export default function Poll(props){
     ValidateUser()
-    var crossIcon = <FontAwesomeIcon icon={faTimes} />
+    var crossIcon = <FontAwesomeIcon icon={faTimes} onClick={() => props.deleteCallback(props.props.pollId) }/>
     console.log("rendering poll component, props is: ",props.props)
-    // const [tempInFahrenheit, setTempInFahrenheit] = useState(0);
-    // const [weatherText, setWeatherText] = useState("");
-    // const [weatherIcon, setWeatherIcon] = useState("");
-    // const [pollData, setpollData] = useState([]);
-    // var daysInAWeek = {
-    //     0 : "Sunday",
-    //     1 : "Monday",
-    //     2 : "Tuesday",
-    //     3 : "Wednesday",
-    //     4 : "Thursday",
-    //     5 : "Friday",
-    //     6 : "Saturday"
-    // }
-    // var monthsInAYear = {
-    //     0 : "January",
-    //     1 : "February",
-    //     2 : "March",
-    //     3 : "April",
-    //     4 : "May",
-    //     5 : "June",
-    //     6 : "July",
-    //     7 : "August",
-    //     8 : "September",
-    //     9 : "October",
-    //     10 : "November",
-    //     11 : "December"
-    // }
 
-    // var today = new Date();
-    // var date = today.getDate() + "/"+ parseInt(today.getMonth()+1) +"/"+ today.getFullYear();
-    // console.log(date);
-    // var currentDay = daysInAWeek[today.getDay()];
-    // var currentMonth = monthsInAYear[today.getMonth()];
-    // var currentDate = today.getDate();
-    // console.log("current date is: ",currentDate)
-    // console.log("current month is: ",currentMonth)
-    // console.log("current day is: ",currentDay)
-    // axios({
-    //     method: 'GET',
-    //     url: "https://api.openweathermap.org/data/2.5/weather?q=Austin&appid=1b6a9c43f4c7125af9f430ff79f20599"
-    // }).then(response => {
-    //     var tempInKelvin = response.data.main.temp;
-    //     if(tempInFahrenheit === 0){
-    //         setTempInFahrenheit(Math.ceil((tempInKelvin - 273) * (9/5)) + 32);
-    //     }
-    //     if(weatherText === ""){
-    //         setWeatherText(response.data.weather[0].description);
-    //     }
-        
-    //     if((weatherText === "clear sky") && (weatherIcon === "")){
-    //         setWeatherIcon(<FontAwesomeIcon icon="sun" />)
-    //     }
-    //     if((weatherText === "overcast clouds") && (weatherIcon === "")){
-    //         // setWeatherIcon(<FontAwesomeIcon icon={["fas", "sun"]} />)
-    //     }
-    //     if((weatherText === "few clouds") && (weatherIcon === "")){
-    //         setWeatherIcon(<FontAwesomeIcon icon="sun" />)
-    //     }
-    //     if((weatherText === "mist") && (weatherIcon === "")){
-    //         setWeatherIcon(<FontAwesomeIcon icon={faSmog} />)
-    //     }
-    //     console.log("the temp in F is: ",tempInFahrenheit);
-    // })
-    // function createPoll(e){
-    //     e.preventDefault();
-    //     console.log("id of the create poll button is: ",e.target.id);
-    //     axios({
-    //         method: "GET",
-    //         url: "http://localhost:8080/create-poll",
-    //         data:{
-    //             data: ""
-    //         }
-    //     }).then(response => {
-    //         console.log("id of the poll is: ",response.data.data._id);
-    //     })
-    //     window.location.reload()
-    // }
 
-    // function deletePoll(e, currentPollId){
-    //     console.log("came in deletePoll method with pollId: ",currentPollId);
-    // }
-    // var currentPollId = props.pollId;
-    // console.log("currentPollId in getPollJSX method: ",currentPollId)
+    function showVoters(){
+        console.log("arrived in showVoters method!")
+    }
+
+
     return (
         <div key = {props.props.key} className = "poll">
             <div id = {props.props.pollId} className = "pollBackground font-white">
-                <div >
-                    {/* <FontAwesomeIcon icon={faTimes} onClick={() => console.log()}/> */}
-                    <p onClick={() => props.deleteCallback(props.props.pollId) }>
+                <div id='pollIdAndCrossIcon'>
+                    <div id='pollIdBlock'>
+                        poll Id: {props.props.pollId}
+                    </div>
+                    <div id='crossIconBlock' >
                         {crossIcon}
-                    </p>
+                    </div>
                 </div>
+
                 <div className = "font-white matchLocationBlock">
                     {props.props.currentDay}, {props.props.currentMonth} {props.props.currentDate} at Cedar Park
                 </div>
@@ -170,9 +98,15 @@ export default function Poll(props){
                     Cedar Park Recreation Center
                     
                 </div>
-                <div className = "weatherDetails">
-                    {props.props.weatherIcon} {props.props.tempInFahrenheit} F {props.props.weatherText}
+                <div id='weatherAndViewVotersBlock'>
+                    <div className = "weatherDetails">
+                        {props.props.weatherIcon} {props.props.tempInFahrenheit} F {props.props.weatherText}
+                    </div>
+                    <div className='viewVotersButton'>
+                        <Button variant='primary' onClick={showVoters}>View Voters</Button>
+                    </div>
                 </div>
+
                 
                 <div className = "grayBar">
 

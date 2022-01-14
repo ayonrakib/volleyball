@@ -287,12 +287,12 @@ router.get('/get-all-polls', async (req, res, next) => {
     })
 })
 
-router.get('/delete-poll', getPoll, async (req, res, next) => {
+router.post('/delete-poll', getPoll, async (req, res, next) => {
     // console.log("came in delete poll")
     try{
         await res.poll.remove();
         res.send({
-            data: "Poll deleted",
+            data: true,
             error: ""
         })
     }
@@ -604,7 +604,7 @@ async function getPoll(req, res, next){
     }
     // console.log("id in getpoll middleware is: ",id)
     try{
-        var poll = await Poll.findOne({id: id}).catch(error => console.log(error));
+        var poll = await Poll.findOne({id: id});
         if(poll !== null){
             // console.log("current poll in getPoll middleware is: ", poll)
         }

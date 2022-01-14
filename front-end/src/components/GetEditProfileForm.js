@@ -1,5 +1,5 @@
 // import { useState } from "react";
-import { Form, Row, Col, Button } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 
 export default function GetEditProfileForm(props){
     function setEditedFirstName(e){

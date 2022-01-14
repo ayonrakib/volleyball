@@ -3,7 +3,7 @@ import Cookies from 'universal-cookie/es6';
 import Navigation from './Navigation';
 import { useHistory } from 'react-router';
 import ValidateUser from './ValidateUser';
-import { Image, Container, Row, Col } from 'react-bootstrap';
+import { Container, Row } from 'react-bootstrap';
 const cookies = new Cookies();
 
  

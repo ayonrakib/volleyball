@@ -3,14 +3,13 @@ import Navigation from "./Navigation";
 import ValidateUser from "./ValidateUser";
 import axios from "axios";
 import { useState } from "react";
-import { Form, Button, Row, Col, Container } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSmog, faCross } from "@fortawesome/free-solid-svg-icons";
+import { faSmog } from "@fortawesome/free-solid-svg-icons";
 var _ = require('lodash')
 
 export default function PollList(){
     ValidateUser();
-    // const [polls, setPolls] = useState("");
     const [tempInFahrenheit, setTempInFahrenheit] = useState(0);
     const [weatherText, setWeatherText] = useState("");
     const [weatherIcon, setWeatherIcon] = useState("");
@@ -40,7 +39,7 @@ export default function PollList(){
         11 : "December"
     };
     var today = new Date();
-    var date = today.getDate() + "/" + parseInt(today.getMonth() + 1) + "/" + today.getFullYear();
+    // var date = today.getDate() + "/" + parseInt(today.getMonth() + 1) + "/" + today.getFullYear();
     // console.log("date is: ",date)
     var currentDay = daysInAWeek[today.getDay()];
     var currentMonth = monthsInAYear[today.getMonth()];
@@ -85,13 +84,30 @@ export default function PollList(){
             }
         }).then(response => {
             console.log("id of the poll is: ",response.data.data._id);
+            if(response.data.data){
+                setNeedToReloadPolls(true)
+            }
         })
-        window.location.reload()
     }
+
 
     function deletePoll(currentPollId){
         console.log("came in deletePoll method with pollId: ",currentPollId);
+        axios({
+            method: "POST",
+            url: "http://localhost:8080/delete-poll",
+            data: {
+                id: currentPollId
+            }
+        }).then(response => {
+            console.log("response from the delete poll url is: ",response.data)
+            if(response.data.data){
+                setNeedToReloadPolls(true)
+            }
+        })
     }
+
+
     var polls = [];
     axios({
         method: "GET",

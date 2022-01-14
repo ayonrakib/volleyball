@@ -122,7 +122,7 @@
   height: 100vh;
 }
 
-.profilePictureBlock, .deletePollIcon, .profileDetailsBlock{
+.profilePictureBlock, .deletePollIcon, .profileDetailsBlock, #crossIconBlock{
   text-align: right;
 }
 
@@ -134,3 +134,8 @@
 .modalProfilePicutreBlock{
   text-align: center;
 }
+
+#pollIdAndCrossIcon, #weatherAndViewVotersBlock{
+  display: flex;
+  justify-content: space-between;
+} 

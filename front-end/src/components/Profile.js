@@ -1,10 +1,10 @@
 // import UploadProfilePicture from '../methods/uploadProfilePicture';
 import Navigation from './Navigation';
-import { Container, Row, Col, Image, Form, Modal } from 'react-bootstrap';
+import { Container, Row, Col, Image, Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import Button from 'react-bootstrap/Button'
-import React, { useRef } from 'react';
+import React from 'react';
 // import getProfilePictureURL from '../methods/getProfilePictureMethod';
 import { useState } from 'react';
 import Cookies from 'universal-cookie/es6';
@@ -17,7 +17,7 @@ const cookies = new Cookies();
 
 export default function Profile(){
     // console.log("rebuilding dom")
-    const profilePictureBlock = useRef("");
+    // const profilePictureBlock = useRef("");
     const [profilePicture, setProfilePicture] = useState("");
     const [profilePictureUrl, setProfilePictureUrl] = useState("")
     const [firstName, setFirstName] = useState("");
@@ -26,7 +26,7 @@ export default function Profile(){
     const [modifiedFirstName, setModifiedFirstName] = useState("");
     const [modifiedLastName, setModifiedLastName] = useState("");
     const [needToLoadEditProfileForm, setNeedToLoadEditProfileForm] = useState(false);
-    const showModalReference = React.createRef();
+    // const showModalReference = React.createRef();
     const [modalBodyText, setModalBodyText] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [stateForCurrentTime, setStateForCurrentTime] = useState(Date.now());
