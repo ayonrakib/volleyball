@@ -19,40 +19,27 @@ var fs = require('fs');
 const storage = multer.diskStorage({
 
     destination: function (req, file, cb) {
-        cb(null, `./temp-images/`)
-        console.log("came in destination method!")
+        cb(null, './temp-images/')
     },
     filename: function (req, file, cb) {
-    //   console.log("req.body is: ",req.body)
       var fileName = file.originalname.slice(0,file.originalname.indexOf("."));
-      console.log("fileName in multer library is: ",fileName)
       var randomString = crypto.randomBytes(20).toString('hex');
       console.log("random string is: ",randomString)
       req.body.name = fileName+"-"+randomString+".png"
-      console.log("req.body.name is: ",req.body.name)
       cb(null, req.body.name)
-      console.log("successfully saved file")
     }
   })
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage })
 
-// rename profile picture
-// input: session, req obj
-// return: false if could not rename
-// method:
-//      1. temp-image theke profile picture read kore rename korbo user er session diye and save korbo images folder e
-//      2. jodi korte na pari:
-//          2.1. return false
 
-function renameProfilePictureAndSave(session, req){
-    console.log("came in renameProfilePictureAndSave method!")
-    fs.rename(`./temp-images/${req.body.name}`, `./images/${session}.png`, function (error, data){
-        if (error){
-            return false;
-        }
-        return true;
-    })
+function renameProfilePicture(session, req){
+  fs.rename(`./temp-images/${req.body.name}`,`./images/${session}.png`, function(error, data){
+    if(error){
+      console.log("error in renaming: ",error)
+    }
+  })
+  return true;
 }
 
 router.get('/', (req, res)=>{
@@ -146,7 +133,7 @@ router.post('/register', upload.any(), async (req, res, next)=>{
     // console.log("hashed pass: ",hashedPassword);
     const saltRounds = 10;
     var session = getSession();
-    renameProfilePictureAndSave(session, req);
+    varisPictureRenamed = renameProfilePicture(session, req);
     const user = new User({
         firstName: firstName,
         lastName: lastName,
@@ -306,6 +293,30 @@ router.post('/delete-poll', getPoll, async (req, res, next) => {
             }
         })
     }
+})
+
+router.post('/show-voters', getPoll, async (req,res) => {
+    // console.log("poll found from getPoll middleware in show-voters is: ",res.poll)
+    if (res.poll === null){
+        res.send({
+            data: false,
+            error: {
+                errorCode: 1000,
+                errorMessage: "Poll was not found!"
+            }
+        })
+    }
+    else{
+        let yesVoters = await getYesVoters(res.poll);
+        console.log("yes voters are: ",yesVoters);
+        let noVoters = await getNoVoters(res.poll);
+        console.log("no voters are: ",noVoters);
+        let maybeVoters = await getMaybeVoters(res.poll);
+        console.log("maybe voters are: ",maybeVoters);
+         
+        res.send(true)
+    }
+    
 })
 
 router.post('/get-user-with-poll-choice', async (req, res, next) => {
@@ -602,19 +613,62 @@ async function getPoll(req, res, next){
     } else {
         id = queryString.query.id;
     }
-    // console.log("id in getpoll middleware is: ",id)
+    console.log("id in getpoll middleware is: ",id)
     try{
-        var poll = await Poll.findOne({id: id});
-        if(poll !== null){
-            // console.log("current poll in getPoll middleware is: ", poll)
-        }
+        var poll = await Poll.findOne({_id: id});
+        console.log("current poll in getPoll middleware is: ", poll)
     }
     catch(error){
         // console.log("found no poll with id "+id)
+        console.error(error)
     }
     res.poll = poll;
     next()
 }
+
+
+async function getYesVoters(poll){
+    let users = [];
+    for(let index = 0; index < poll.yesVoters.length; index++){
+        let user = await getUserWithId(poll.yesVoters[index])
+        users.push(`${user.firstName + ' ' + user.lastName}`)
+    }
+    // console.log("users are: ",users)
+    return users;
+}
+
+
+async function getNoVoters(poll){
+    let users = [];
+    for(let index = 0; index < poll.noVoters.length; index++){
+        let user = await getUserWithId(poll.noVoters[index])
+        users.push(`${user.firstName + ' ' + user.lastName}`)
+    }
+    // console.log("users are: ",users)
+    return users;
+}
+
+
+async function getMaybeVoters(poll){
+    let users = [];
+    for(let index = 0; index < poll.maybeVoters.length; index++){
+        let user = await getUserWithId(poll.maybeVoters[index])
+        users.push(`${user.firstName + ' ' + user.lastName}`)
+    }
+    // console.log("users are: ",users)
+    return users;
+}
+
+
+async function getUserWithId(id){
+    try {
+        var user = await User.findById(id);
+    } catch (error) {
+        console.error(error)
+    }
+    return user;
+}
+
 
 async function getUser(req, res, next){
     var queryString = url.parse(req.url, true);

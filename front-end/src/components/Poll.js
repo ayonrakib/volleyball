@@ -77,7 +77,9 @@ export default function Poll(props){
         axios({
             method: "POST",
             url: "http://localhost:8080/show-voters",
-            data: props.props.pollId
+            data: {
+                id: props.props.pollId
+            }
         }).then(response => {
             console.log("response from show voters url is: ",response.data)
         })
