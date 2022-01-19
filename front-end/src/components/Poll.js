@@ -1,11 +1,12 @@
 // import Navigation from "./Navigation"
 import 'bootstrap/dist/css/bootstrap.min.css';
-// import { useState } from "react";
+import { useState } from "react";
 // import Navigation from './Navigation';
 import ValidateUser from './ValidateUser';
 // import ToggleButtons from "../methods/ToggleButtons";
 // import ControlledToggleButton from "../components/ControlledToggleButton"
 import UnControlledToggleButtons from './UnControlledToggleButtons';
+import GetModalForBadprofileInputs from './GetModalForBadprofileInputs';
 // import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
@@ -66,11 +67,16 @@ import axios from 'axios';
 //          22.2. sob poll
 //          22.3. create poll button return
 export default function Poll(props){
+    console.log("poll component loaded!")
+
     ValidateUser()
+    const [showModal, setShowModal] = useState(false);
+    const [modalBodyText, setModalBodyText] = useState("");
+    const [stateForCurrentTime, setStateForCurrentTime] = useState(Date.now());
     var crossIcon = <FontAwesomeIcon icon={faTimes} onClick={() => props.deleteCallback(props.props.pollId) }/>
     console.log("rendering poll component, props is: ",props.props)
 
-
+    console.log("value of showmodal at poll component is: ",showModal)
     function showVoters(){
         console.log("arrived in showVoters method!")
         console.log("the poll id of the current show voters poll is: ",props.props.pollId)
@@ -82,6 +88,9 @@ export default function Poll(props){
             }
         }).then(response => {
             console.log("response from show voters url is: ",response.data)
+            setStateForCurrentTime(Date.now())
+            setModalBodyText("modal")
+            setShowModal(true)
         })
     }
 
@@ -126,6 +135,7 @@ export default function Poll(props){
                     <UnControlledToggleButtons id = {props.props.pollId}/>
                 </div>
             </div>
+            <GetModalForBadprofileInputs showModal = {showModal} modalBodyText = {modalBodyText} key = {stateForCurrentTime} keyValue = {stateForCurrentTime}/>
         </div>
     )
 }

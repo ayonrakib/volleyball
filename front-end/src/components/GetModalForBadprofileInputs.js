@@ -2,6 +2,10 @@ import { Modal, Button } from "react-bootstrap";
 import { useState } from "react";
 
 export default function GetModalForBadprofileInputs(props) {
+    // console.log("showmodal component rendered!")
+    // console.log("key value in modal component is: ",props.keyValue);
+    // console.log("the value of showmodal at the very 1st of modal component is: ",props.showModal);
+    
     const [show, setShow] = useState(props.showModal);
   
     const handleClose = () =>{

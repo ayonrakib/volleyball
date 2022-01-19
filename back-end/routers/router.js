@@ -308,13 +308,19 @@ router.post('/show-voters', getPoll, async (req,res) => {
     }
     else{
         let yesVoters = await getYesVoters(res.poll);
-        console.log("yes voters are: ",yesVoters);
+        // console.log("yes voters are: ",yesVoters);
         let noVoters = await getNoVoters(res.poll);
-        console.log("no voters are: ",noVoters);
+        // console.log("no voters are: ",noVoters);
         let maybeVoters = await getMaybeVoters(res.poll);
-        console.log("maybe voters are: ",maybeVoters);
-         
-        res.send(true)
+        // console.log("maybe voters are: ",maybeVoters);
+        res.send({
+            data:{
+                yesVoters: yesVoters,
+                noVoters: noVoters,
+                maybeVoters: maybeVoters
+            },
+            error: ""
+        })
     }
     
 })
@@ -357,7 +363,7 @@ router.post('/save-profile-details',getUserWithSession, async (req, res)=>{
             }
         })
     }
-    if(firstName === ""){
+    else if(firstName === ""){
         res.send({
             data: false,
             message: {
