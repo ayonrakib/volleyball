@@ -30,16 +30,16 @@ export default function PollList(){
             setWeatherText(response.data.weather[0].description);
         }
         
-        if((weatherText === "clear sky") && (weatherIcon === "")){
+        else if((weatherText === "clear sky") && (weatherIcon === "")){
             setWeatherIcon(<FontAwesomeIcon icon={faSun} />)
         }
-        if((weatherText === "overcast clouds") && (weatherIcon === "")){
+        else if((weatherText === "overcast clouds") && (weatherIcon === "")){
             // setWeatherIcon(<FontAwesomeIcon icon={["fas", "sun"]} />)
         }
-        if((weatherText === "few clouds") && (weatherIcon === "")){
+        else if((weatherText === "few clouds") && (weatherIcon === "")){
             setWeatherIcon(<FontAwesomeIcon icon="sun" />)
         }
-        if((weatherText === "mist") && (weatherIcon === "")){
+        else if((weatherText === "mist") && (weatherIcon === "")){
             setWeatherIcon(<FontAwesomeIcon icon={faSmog} />)
         }
         console.log("the temp in F is: ",tempInFahrenheit);
