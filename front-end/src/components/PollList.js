@@ -1,11 +1,16 @@
 import Poll from "./Poll";
 import Navigation from "./Navigation";
 import ValidateUser from "./ValidateUser";
+import ReloadComponent from "./ReloadComponent";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSmog, faSun } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+// import { regular, solid, brands } from '@fortawesome/fontawesome-svg-core/import.macro'
+import { faCloud } from '@fortawesome/free-solid-svg-icons'
+// import { faSmog, faSun } from "@fortawesome/free-solid-svg-icons";
+import { solid, regular, brands } from '@fortawesome/fontawesome-svg-core/import.macro'
+// import { faCoffee, faSmog } from '@fortawesome/free-solid-svg-icons'
 var _ = require('lodash')
 
 export default function PollList(){
@@ -16,31 +21,46 @@ export default function PollList(){
     const [weatherIcon, setWeatherIcon] = useState("");
     const [pollData, setpollData] = useState([]);
     const [needToReloadPolls, setNeedToReloadPolls] = useState(false);
+    const [keyForReloadComponent, setKeyForReloadComponent] = useState(0);
+    axios({
+        method: "GET",
+        url: "http://localhost:8080/get-all-polls",
+        data:""
+    }).then(response => {
+        console.log("all polls are: ",response.data)
+        if(!(_.isEqual(pollData, response.data.data))){
+            setpollData(response.data.data)
+        }
+    })
     useEffect(() => {
         console.log("useeffect for getting weather data")
         axios({
         method: 'GET',
         url: "https://api.openweathermap.org/data/2.5/weather?q=Austin&appid=1b6a9c43f4c7125af9f430ff79f20599"
     }).then(response => {
+        console.log("came to response of weather report")
+        console.log("repsonse fromw eather api is: ",response.data)
         var tempInKelvin = response.data.main.temp;
         if(tempInFahrenheit === 0){
             setTempInFahrenheit(Math.ceil((tempInKelvin - 273) * (9/5)) + 32);
         }
         if(weatherText === ""){
             setWeatherText(response.data.weather[0].description);
+            console.log("weather text set to: ",weatherText)
         }
         
-        else if((weatherText === "clear sky") && (weatherIcon === "")){
-            setWeatherIcon(<FontAwesomeIcon icon={faSun} />)
+         if((weatherText === "clear sky") && (weatherIcon === "")){
+            setWeatherIcon(<FontAwesomeIcon icon={regular('sun')} />)
         }
-        else if((weatherText === "overcast clouds") && (weatherIcon === "")){
-            // setWeatherIcon(<FontAwesomeIcon icon={["fas", "sun"]} />)
+         if((weatherText === "overcast clouds") && (weatherIcon === "")){
+            console.log("smog icon set")
+            setWeatherIcon(<FontAwesomeIcon icon={faCloud} />)
         }
-        else if((weatherText === "few clouds") && (weatherIcon === "")){
-            setWeatherIcon(<FontAwesomeIcon icon="sun" />)
+         if((weatherText === "few clouds") && (weatherIcon === "")){
+            setWeatherIcon(<FontAwesomeIcon icon={faCloud} />)
         }
-        else if((weatherText === "mist") && (weatherIcon === "")){
-            setWeatherIcon(<FontAwesomeIcon icon={faSmog} />)
+         if((weatherText === "mist") && (weatherIcon === "")){
+            setWeatherIcon(<FontAwesomeIcon icon={faCloud} />)
         }
         console.log("the temp in F is: ",tempInFahrenheit);
     })
@@ -102,7 +122,10 @@ export default function PollList(){
             }
         }).then(response => {
             console.log("id of the poll is: ",response.data.data._id);
+            console.log("response is: ",response.data)
             if(response.data.data){
+                console.log("poll page reloading!")
+                setKeyForReloadComponent(Math.random())
                 setNeedToReloadPolls(true)
             }
         })
@@ -120,7 +143,10 @@ export default function PollList(){
         }).then(response => {
             console.log("response from the delete poll url is: ",response.data)
             if(response.data.data){
+                console.log("poll deleted!")
+                setKeyForReloadComponent(Math.random())
                 setNeedToReloadPolls(true)
+                
             }
         })
     }
@@ -133,12 +159,11 @@ export default function PollList(){
         
         var props = {
                         key: Math.random(),
-                        
+                        weatherIcon : weatherIcon,
                         pollId : `${pollData[pollIndex]._id}`,
                         currentDay : `${currentDay}`,
                         currentMonth: `${currentMonth}`,
                         currentDate : `${currentDate}`,
-                        weatherIcon : weatherIcon,
                         tempInFahrenheit : `${tempInFahrenheit}`,
                         weatherText : `${weatherText}`
                     }
@@ -149,11 +174,15 @@ export default function PollList(){
         polls = ""
     } 
     console.log("weather icon before rendering: ",weatherIcon)
+    console.log("weather text before rendering: ",weatherText)
     return(
             <div>
-                
+                <ReloadComponent key={keyForReloadComponent}/>
                 <Navigation/>
                 {polls}
+                <FontAwesomeIcon icon={solid('user-secret')} />
+                <FontAwesomeIcon icon={regular('sun')} />
+                <FontAwesomeIcon icon={brands('twitter')} />
                 <div className = "poll">
                     <Button variant = "primary" onClick = {(e) => createPoll(e)}>
                         Create Poll

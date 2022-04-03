@@ -68,7 +68,7 @@ import axios from 'axios';
 //          22.3. create poll button return
 export default function Poll(props){
     console.log("poll component loaded!")
-
+    // console.log("props is: ",props)
     ValidateUser()
     const [showModal, setShowModal] = useState(false);
     const [modalBodyText, setModalBodyText] = useState("");
@@ -76,7 +76,7 @@ export default function Poll(props){
     var crossIcon = <FontAwesomeIcon icon={faTimes} onClick={() => props.deleteCallback(props.props.pollId) }/>
     console.log("rendering poll component, props is: ",props.props)
 
-    console.log("value of showmodal at poll component is: ",showModal)
+    // console.log("value of showmodal at poll component is: ",showModal)
     function showVoters(){
         console.log("arrived in showVoters method!")
         console.log("the poll id of the current show voters poll is: ",props.props.pollId)
