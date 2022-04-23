@@ -75,12 +75,19 @@ router.get('/get-users', async (req,res) => {
 })
 
 router.post('/authenticate', getUserWithEmail, (req, res, next)=>{
+    console.log("came in authenticate method!")
     var email = req.body.email;
     var password = req.body.password;
     // console.log("authenticate url is called");
     // console.log("body of request is: ",req.body);
-    // console.log("email is: ",req.body.email);
-    // console.log("password is: ",req.body.password);
+    console.log("email is: ",req.body.email);
+    console.log("password is: ",req.body.password);
+    if(res.user === null){
+        res.send({
+            data: false,
+            error: ""
+        });
+    }
     if((email != "") && (password != "")){
         if(authenticate(email, password, res.user)){
             // console.log("authenticated in the nodejs authenticate url!");
@@ -110,11 +117,10 @@ router.post('/authenticate', getUserWithEmail, (req, res, next)=>{
             });
         }
     }
-
     // for(let property in req.body){
     //     // console.log(property);
     // }
-
+    
 })
 
 router.post('/register', upload.any(), async (req, res, next)=>{
@@ -708,6 +714,7 @@ async function getUserWithSession(req,res,next){
 }
 
 async function getUserWithEmail(req,res,next){
+    console.log("came to getUserWithEmail function!")
     var queryString = url.parse(req.url, true);
     var email = req.body.email;
     // // console.log("email in getUserWithEmail: ",email);
@@ -717,11 +724,16 @@ async function getUserWithEmail(req,res,next){
     } else {
         email = queryString.query.email;
     }
-    // console.log("email in getUserWithEmail method is: ",email)
+    console.log("email in getUserWithEmail method is: ",email)
     try {
         var user = await User.findOne({email: email}).catch(error => console.log(error));
+        console.log("user in getUserWithEmail is: ",user)
         if(user !== null){
             // console.log("found one user with findone in getUserWithEmail method: ",user);
+        }
+        else if(user == null){
+            res.user = null;
+            next();
         }
     } catch (error) {
         // console.log("found no user with findone");
