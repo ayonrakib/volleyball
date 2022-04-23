@@ -80,15 +80,15 @@ router.post('/authenticate', getUserWithEmail, (req, res, next)=>{
     var password = req.body.password;
     // console.log("authenticate url is called");
     // console.log("body of request is: ",req.body);
-    console.log("email is: ",req.body.email);
-    console.log("password is: ",req.body.password);
+    // console.log("email is: ",req.body.email);
+    // console.log("password is: ",req.body.password);
     if(res.user === null){
         res.send({
             data: false,
             error: ""
         });
     }
-    if((email != "") && (password != "")){
+    else if((email != "") && (password != "")){
         if(authenticate(email, password, res.user)){
             // console.log("authenticated in the nodejs authenticate url!");
             var sessionId = getSession();
