@@ -724,10 +724,10 @@ async function getUserWithEmail(req,res,next){
     } else {
         email = queryString.query.email;
     }
-    console.log("email in getUserWithEmail method is: ",email)
+    // console.log("email in getUserWithEmail method is: ",email)
     try {
         var user = await User.findOne({email: email}).catch(error => console.log(error));
-        console.log("user in getUserWithEmail is: ",user)
+        // console.log("user in getUserWithEmail is: ",user)
         if(user !== null){
             // console.log("found one user with findone in getUserWithEmail method: ",user);
         }
