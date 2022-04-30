@@ -6,3 +6,4 @@ front-end/public/ppt
 node_modules
 package-lock.json
 package.json
+back-end/public/queries
