@@ -1,9 +1,14 @@
 // import { Sequelize, Model, DataTypes } from 'sequelize';
-const { DataTypes } = require('sequelize');
+const { DataTypes, BIGINT } = require('sequelize');
 const sequelize = require("../mariadb")
 
 const User = sequelize.define('user', {
-  id: DataTypes.BIGINT,
+  id:{
+    type: DataTypes.BIGINT,
+    primaryKey: true,
+    autoIncrement: true,
+    allowNul: false
+  },
   firstName: DataTypes.STRING,
   lastName: DataTypes.STRING,
   email: DataTypes.STRING,
