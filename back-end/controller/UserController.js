@@ -14,19 +14,23 @@ class UserController{
             const salt = this.getSalt();
             console.log("salt is: ",salt);
         }
+        console.log("current user salt is: ",salt)
         var hashedPassword = crypto.pbkdf2Sync(password,salt,1000,64,"sha512").toString("hex");
         console.log("password is: ",hashedPassword)
         return hashedPassword
     }
 
     async authenticate(email, password){
-        var hashedPassword = this.hashPassword(password, "")
-        var user = await this.getUser(email);
-        console.log("promiseObjectForUser: ",user)
+        // var hashedPassword = this.hashPassword(password, "")
+        var user = await this.getUserWithEmail(email);
         if (user == false){
             return false
         }
+        var hashedPassword = this.hashPassword(password, user.salt)
+        console.log("promiseObjectForUser: ",user)
+
         console.log("user password is: ",user.password)
+        console.log("hashed password: ",hashedPassword)
         if(user.password === hashedPassword){
             return true
         }
