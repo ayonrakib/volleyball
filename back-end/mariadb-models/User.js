@@ -3,11 +3,13 @@ const { DataTypes } = require('sequelize');
 const sequelize = require("../mariadb")
 
 const User = sequelize.define('user', {
+  id: DataTypes.BIGINT,
   firstName: DataTypes.STRING,
   lastName: DataTypes.STRING,
   email: DataTypes.STRING,
   password: DataTypes.STRING,
   session: DataTypes.STRING,
+  salt: DataTypes.STRING,
   role: DataTypes.STRING
     },
     {

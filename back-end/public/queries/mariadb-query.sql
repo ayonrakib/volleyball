@@ -6,12 +6,13 @@ USE volleyball;
 	firstName VARCHAR (50) NOT NULL,
 	lastName VARCHAR (50) NOT NULL,
 	email VARCHAR (50) UNIQUE NOT NULL,
-	password VARCHAR (50) NOT NULL,
+	password VARCHAR (1000) NOT NULL,
+	salt VARCHAR (1000) NOT NULL,
 	session VARCHAR (500) NOT NULL,
-	role VARCHAR (10) DEFAULT "player",
+	role VARCHAR (10) NOT NULL DEFAULT "player",
 	PRIMARY KEY (id)
-);
-INSERT INTO users
+);*/
+/*INSERT INTO users
 (firstName, lastName, email, password, session)
 VALUES
 ("rakib" , "ayon", "rakib@gmail.com", "password", "123");
@@ -30,3 +31,4 @@ VALUES
 ALTER TABLE users
 ADD CONSTRAINT email UNIQUE(email);*/
 SELECT * FROM users;
+/*DROP TABLE users;*/
