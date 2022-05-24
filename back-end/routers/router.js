@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-require('../db');
+// require('../db');
 const Poll = require('../models/Poll');
 const User = require('../models/User');
 const file = require('../movies.json');
@@ -53,7 +53,17 @@ router.put('/put-method', (req, res) => {
     res.send("Put working successfully!")
 })
 
+
+// get all users of mariadb
+// get call
+// input: nothing, returns JSOn of all users of mariadb
+// method:
+//      1. no middleware
+//      2. url: get-all-users
+//      3. 
+
 router.get('/get-users', async (req,res) => {
+    console.log("came in get-users url!")
     var adr = 'http://localhost:8080/a/default.htm?year=2017&month=february';
     var q = url.parse(adr, true);
 

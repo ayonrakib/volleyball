@@ -7,7 +7,7 @@ app.use(express.json());
 app.use(express.static('public'))
 const router = express.Router();
 require('dotenv').config();
-const db = require('../back-end/db');
+const db = require('../back-end/mariadb');
 var routerFile = require('../back-end/routers/router');
 var cors = require('cors');
 

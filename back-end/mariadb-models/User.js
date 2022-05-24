@@ -2,7 +2,7 @@
 const { DataTypes, BIGINT } = require('sequelize');
 const sequelize = require("../mariadb")
 
-const User = sequelize.define('user', {
+const User = sequelize.define('users', {
   id:{
     type: DataTypes.BIGINT,
     primaryKey: true,
@@ -14,7 +14,6 @@ const User = sequelize.define('user', {
   email: DataTypes.STRING,
   password: DataTypes.STRING,
   session: DataTypes.STRING,
-  salt: DataTypes.STRING,
   role: DataTypes.STRING
     },
     {
@@ -26,7 +25,7 @@ const User = sequelize.define('user', {
 
 (async () => {
   await sequelize.sync();
-  // Code here
+  
 })();
 
 module.exports = User;

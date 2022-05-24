@@ -30,5 +30,7 @@ VALUES
 /*RENAME TABLE user TO users;
 ALTER TABLE users
 ADD CONSTRAINT email UNIQUE(email);*/
-SELECT * FROM users;
+/*ALTER TABLE users
+DROP COLUMN salt;
+SELECT * FROM users;*/
 /*DROP TABLE users;*/
