@@ -48,6 +48,11 @@ router.get('/', (req, res)=>{
     res.end();
 })
 
+router.put('/put-method', (req, res) => {
+    console.log("put method input is: ",req.body.name);
+    res.send("Put working successfully!")
+})
+
 router.get('/get-users', async (req,res) => {
     var adr = 'http://localhost:8080/a/default.htm?year=2017&month=february';
     var q = url.parse(adr, true);

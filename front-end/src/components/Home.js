@@ -4,6 +4,7 @@ import Navigation from './Navigation';
 import { useHistory } from 'react-router';
 import ValidateUser from './ValidateUser';
 import { Container, Row } from 'react-bootstrap';
+import axios from 'axios'
 const cookies = new Cookies();
 
  
@@ -20,6 +21,13 @@ export default function Home(){
         // how to use getUserWithEmail middleware here?
         ValidateUser();
     }
+    axios({
+        method: 'PUT',
+        url: 'http://localhost:8080/put-method',
+        data:{
+            name: "Ayon"
+        }
+    }).then(response => console.log("response from put nodejs is: ",response.data))
     return(
         <div>
             <Navigation/>
