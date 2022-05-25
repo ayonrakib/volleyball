@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 // require('../db');
 const Poll = require('../models/Poll');
 const User = require('../models/User');
+const mariadbUser = require("../mariadb-models/User");
 const file = require('../movies.json');
 
 const multer = require('multer');
@@ -55,12 +56,31 @@ router.put('/put-method', (req, res) => {
 
 
 // get all users of mariadb
-// get call
+// get method
 // input: nothing, returns JSOn of all users of mariadb
 // method:
 //      1. no middleware
-//      2. url: get-all-users
-//      3. 
+//      2. url: get-users-mariadb
+//      3. DB theke sob user obj read kore nibo
+//      4. empty user list
+//      5. user objects er sob user object er jonno:
+//          5.1. user list e user obj push
+//      6. return users list
+router.get("/get-users-mariadb", async (req, res) => {
+    console.log("came in get-users-mariadb url!");
+    const userObjectsFromDatabase = await mariadbUser.findAll();
+    var users = [];
+    for(var index = 0; index < userObjectsFromDatabase.length; index++){
+        users.push(userObjectsFromDatabase[index].dataValues)
+    }
+    res.send(users);
+    res.end();
+})
+
+// register-mariadb
+// post method
+// method:
+//      1. read data from 
 
 router.get('/get-users', async (req,res) => {
     console.log("came in get-users url!")

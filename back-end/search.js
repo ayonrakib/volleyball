@@ -6,10 +6,10 @@ const db = require('./mariadb')
 // })
 
 async function getUsers(){
-    const userObjects = await User.findAll();
+    const userObjectsFromDatabase = await User.findAll();
     var users = [];
-    for(var index = 0; index < userObjects.length; index++){
-        users.push(userObjects[index].dataValues)
+    for(var index = 0; index < userObjectsFromDatabase.length; index++){
+        users.push(userObjectsFromDatabase[index].dataValues)
     }
     console.log("users are: ",users)
     // return users;
