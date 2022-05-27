@@ -77,10 +77,87 @@ router.get("/get-users-mariadb", async (req, res) => {
     res.end();
 })
 
+// hash password
+// input: plain text password
+// return: hashed password
+// method:
+//      1. salt banabo
+//      2. password salt shoho hash korbo
+//      3. return hashed password
+function hashPassword(password){
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(password, salt);
+    return hashedPassword;
+}
+
 // register-mariadb
 // post method
 // method:
-//      1. read data from 
+//      1. read data from front end
+//      2. check if email exists in db
+//      3. If there is an error:
+//          3.1. return the error in the front end
+//      4. else if the user exists:
+//          4.1. return response that user exists
+//      5. else (the user does not exist):
+//          5.1. read user data from API
+//          5.2. create the user in db
+//          5.3. If there is an error creating the user:
+//              5.3.1. return false to the front end
+//          5.4. return the session to front end
+
+router.post("/register-mariadb", getUserWithEmailFromMariadb, async (req, res) => {
+    console.log("arrived in register-mariadb url!");
+    console.log("response user obj is: ",res.user);
+    if(res.error){
+        res.send({
+            data: false,
+            error: {
+                errorCode: 300,
+                errorMessage: "There was a problem while creating the user, please try again!"
+            }
+        });
+        res.end();
+    }
+    else if(res.user){
+        res.send({
+            data: false,
+            error: {
+                errorCode: 200,
+                errorMessage: 'User already exists!'
+            }
+        })
+        res.end();
+    }
+    else{
+        console.log("req dict is: ",req.body);
+        var firstName = req.body.firstName;
+        var lastName = req.body.lastName;
+        var email = req.body.email;
+        var password = req.body.password;
+        var hashedPassword = hashPassword(password);
+        console.log("hashed password is: ",hashedPassword)
+        var session = getSession();
+        try {
+            var newUser = await mariadbUser.create({ firstName: firstName, lastName: lastName, email: email, password: hashedPassword, session: session })
+        } catch (error) {
+            console.error(error)
+            res.send({
+                data: false,
+                error: {
+                    errorCode: 400,
+                    errorMessage: "The user could not be created! Please try again!"
+                }
+            })
+            return;
+        }
+        res.send({
+            data: session,
+            error: ""
+        })
+        res.end();
+    }
+})
 
 router.get('/get-users', async (req,res) => {
     console.log("came in get-users url!")
@@ -775,6 +852,35 @@ async function getUserWithEmail(req,res,next){
     }
     res.user = user;
     next();
+}
+
+
+// get user with email from mariadb
+// input: request, response, next middleware
+// return: user obj if found, null if not
+// method:
+//      1. db theke user search korbo with email = input email
+//      2. if user found:
+//          2.1. set response.user = user obj
+//          2.2. call next middleware
+//      3. error hoile:
+//          3.1. log korbo error
+//          3.2. response er error object set korbo with error code and message "could not save user"
+
+async function getUserWithEmailFromMariadb(req, res, next){
+    console.log("came in getUserWithEmailFromMariadb method!")
+    try {
+        var user = await mariadbUser.findOne({ where: {email: req.body.email} });
+        // console.log("found user in getUserWithEmailFromMariadb method: ",user.dataValues);
+        res.user = user;
+        next();
+    } catch (error) {
+        console.error(error);
+        res.error = {
+            errorCode: 300,
+            errorMessage: "User could not be saved!"
+        }
+    }
 }
 
 function authenticate(email, password, userFromDatabase){
