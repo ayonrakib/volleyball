@@ -123,11 +123,13 @@ router.post("/login-mariadb", getUserWithEmailFromMariadb, async (req, res) => {
         if(bcrypt.compareSync(req.body.password, res.user.password)){
             console.log("user authenticated!");
             let session = getSession();
+            res.user.session = session;
+            await res.user.save();
             res.send({
                 data: session,
                 error: ""
             });
-            res.end();
+            // res.end();
         }
         else{
             console.log("user not authenticated!");
@@ -138,7 +140,7 @@ router.post("/login-mariadb", getUserWithEmailFromMariadb, async (req, res) => {
                     errorMessage: "Please insert valid email or password!"
                 }
             });
-            res.end();
+            // res.end();
         }
     }
 })
