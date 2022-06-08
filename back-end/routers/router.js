@@ -90,6 +90,59 @@ function hashPassword(password){
     return hashedPassword;
 }
 
+
+// login-mariadb
+// post method
+// middleware: get user with email from mariadb
+// method:
+//      1. if middleware response user is unavailable:
+//          1.1. return false and error message as "invalid email or password! Please tyr again!"
+//      2. validate with mariadb
+//      3. if authenticated:
+//          3.1. create a session
+//          3.2. save the session on the mariadb for the user with input email
+//          3.3. if error on saving in db:
+//              3.3.1. return response with false and say that please try logging in again!
+//          3.4. return response with the session and no error message
+//      4. if not authenticated:
+//          4.1. return false and error message as "invalid email or password! Please tyr again!"
+router.post("/login-mariadb", getUserWithEmailFromMariadb, async (req, res) => {
+    console.log("middleware response for login url: ",res.error)
+    if(res.error){
+        console.log("user was not found!")
+        res.send({
+            data: false,
+            error:{
+                errorCode: 600,
+                errorMessage: "Please insert valid email or password!"
+            }
+        });
+        res.end();
+    }
+    else{
+        if(bcrypt.compareSync(req.body.password, res.user.password)){
+            console.log("user authenticated!");
+            let session = getSession();
+            res.send({
+                data: session,
+                error: ""
+            });
+            res.end();
+        }
+        else{
+            console.log("user not authenticated!");
+            res.send({
+                data: false,
+                error:{
+                    errorCode: 600,
+                    errorMessage: "Please insert valid email or password!"
+                }
+            });
+            res.end();
+        }
+    }
+})
+
 // register-mariadb
 // post method
 // method:
@@ -158,6 +211,7 @@ router.post("/register-mariadb", getUserWithEmailFromMariadb, async (req, res) =
         res.end();
     }
 })
+
 
 router.get('/get-users', async (req,res) => {
     console.log("came in get-users url!")
@@ -871,9 +925,19 @@ async function getUserWithEmailFromMariadb(req, res, next){
     console.log("came in getUserWithEmailFromMariadb method!")
     try {
         var user = await mariadbUser.findOne({ where: {email: req.body.email} });
-        // console.log("found user in getUserWithEmailFromMariadb method: ",user.dataValues);
-        res.user = user;
-        next();
+        // console.log("found user in getUserWithEmailFromMariadb method: ",user);
+        if(user === null){
+            res.error = {
+                errorCode: 500,
+                errorMessage: "User was not found!"
+            }
+            next();
+        }
+        else{
+            res.user = user;
+            next();
+        }
+
     } catch (error) {
         console.error(error);
         res.error = {
