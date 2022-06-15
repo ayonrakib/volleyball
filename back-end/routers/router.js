@@ -387,6 +387,21 @@ router.post('/validate', getUserWithSession, (req, res, next)=>{
     }
 })
 
+
+// validate-cookie-mariadb
+// input: url, middleware: get user with session from amriadb
+// return: true if valid session, false if not
+// method:
+//      1. if user found:
+//          1.1. return true
+//      2. else:
+//          2.1. return false
+router.post("/validate-cookie-mariadb", async (req, res) => {
+    console.log("came in validate-cookie-mariadb url!")
+    console.log("req.body in validate-cookie-mariadb is: ",req.body)
+})
+
+
 router.post('/logout',getUserWithSession, (req, res, next)=>{
     // console.log ("came in logout url");
 
