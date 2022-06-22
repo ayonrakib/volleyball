@@ -16,6 +16,7 @@ const crypto = require('crypto');
 const { session } = require('passport');
 var cookieParser = require('cookie-parser');
 var fs = require('fs');
+var _ = require("lodash");
 
 const storage = multer.diskStorage({
 
@@ -129,7 +130,8 @@ router.post("/login-mariadb", getUserWithEmailFromMariadb, async (req, res) => {
                 data: session,
                 error: ""
             });
-            // res.end();
+            res.end();
+            return;
         }
         else{
             console.log("user not authenticated!");
@@ -140,7 +142,8 @@ router.post("/login-mariadb", getUserWithEmailFromMariadb, async (req, res) => {
                     errorMessage: "Please insert valid email or password!"
                 }
             });
-            // res.end();
+            res.end();
+            return;
         }
     }
 })
@@ -396,10 +399,28 @@ router.post('/validate', getUserWithSession, (req, res, next)=>{
 //          1.1. return true
 //      2. else:
 //          2.1. return false
-router.post("/validate-cookie-mariadb", async (req, res) => {
+router.post("/validate-cookie-mariadb", getUserWithSessionFromMariadb, async (req, res) => {
     console.log("came in validate-cookie-mariadb url!")
     console.log("req.body in validate-cookie-mariadb is: ",req.body)
     console.log("session in validate-cookie-mariadb is: ",req.body.data)
+    if(res.user === false){
+        res.send({
+            data: false,
+            error:
+            {
+                errorCode: 1500,
+                errorMessage: "user was not found!"
+            }
+        })
+    }
+    else{
+        res.send({
+            data: true,
+            error: ""
+        })
+    }
+    res.end();
+    return;
 })
 
 
@@ -897,6 +918,40 @@ async function getUserWithSession(req,res,next){
     next()
 }
 
+
+// get user with session from mariadb
+// input: req, res, next
+// return: nothing
+// method:
+//      1. search for any user in mariadb with user.session = session from request
+//      2. if user found:
+//          2.1. response.user = user
+//          2.2. call next middleware
+//          2.3. return
+//      3. response.user = false
+//      4. call next middleware
+//      5. return
+async function getUserWithSessionFromMariadb(req, res, next){
+    console.log("came in getUserWithSessionFromMariadb method!")
+    console.log("session in getUserWithSessionFromMariadb method is: ",req.body.data)
+    const user = await mariadbUser.findAll({
+        where: {
+            session: req.body.data
+        }
+    });
+    console.log("user in getUserWithSessionFromMariadb method is: ",user)
+    if(_.isEqual(user, [])){
+        // console.log("user wasnt found in getUserWithSessionFromMariadb method!")
+        res.user = false;
+    }
+    else{
+        res.user = user[0];
+    }
+    next();
+    return;
+}
+
+
 async function getUserWithEmail(req,res,next){
     console.log("came to getUserWithEmail function!")
     var queryString = url.parse(req.url, true);
@@ -972,9 +1027,11 @@ function authenticate(email, password, userFromDatabase){
     return false;
 }
 
+
 function getSession(){
     return crypto.randomBytes(20).toString('hex');
 }
+
 
 async function assignSessionToUser(user, session){
     user.session = session;
