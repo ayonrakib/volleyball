@@ -399,6 +399,7 @@ router.post('/validate', getUserWithSession, (req, res, next)=>{
 router.post("/validate-cookie-mariadb", async (req, res) => {
     console.log("came in validate-cookie-mariadb url!")
     console.log("req.body in validate-cookie-mariadb is: ",req.body)
+    console.log("session in validate-cookie-mariadb is: ",req.body.data)
 })
 
 
