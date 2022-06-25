@@ -166,18 +166,8 @@ router.post("/login-mariadb", getUserWithEmailFromMariadb, async (req, res) => {
 
 router.post("/register-mariadb", getUserWithEmailFromMariadb, async (req, res) => {
     console.log("arrived in register-mariadb url!");
-    console.log("response user obj is: ",res.user);
-    if(res.error){
-        res.send({
-            data: false,
-            error: {
-                errorCode: 300,
-                errorMessage: "There was a problem while creating the user, please try again!"
-            }
-        });
-        res.end();
-    }
-    else if(res.user){
+    console.log("response user obj is: ",res.foundUser);
+    if(res.foundUser){
         res.send({
             data: false,
             error: {
@@ -186,8 +176,9 @@ router.post("/register-mariadb", getUserWithEmailFromMariadb, async (req, res) =
             }
         })
         res.end();
+        return;
     }
-    else{
+    else if(!(res.foundUser)){
         console.log("req dict is: ",req.body);
         var firstName = req.body.firstName;
         var lastName = req.body.lastName;
@@ -214,8 +205,58 @@ router.post("/register-mariadb", getUserWithEmailFromMariadb, async (req, res) =
             error: ""
         })
         res.end();
+        return;
     }
-})
+}
+    // if(res.error){
+    //     res.send({
+    //         data: false,
+    //         error: {
+    //             errorCode: 300,
+    //             errorMessage: "There was a problem while creating the user, please try again!"
+    //         }
+    //     });
+    //     res.end();
+    // }
+    // else if(res.user){
+    //     res.send({
+    //         data: false,
+    //         error: {
+    //             errorCode: 200,
+    //             errorMessage: 'User already exists!'
+    //         }
+    //     })
+    //     res.end();
+    // }
+    // else{
+    //     console.log("req dict is: ",req.body);
+    //     var firstName = req.body.firstName;
+    //     var lastName = req.body.lastName;
+    //     var email = req.body.email;
+    //     var password = req.body.password;
+    //     var hashedPassword = hashPassword(password);
+    //     console.log("hashed password is: ",hashedPassword)
+    //     var session = getSession();
+    //     try {
+    //         var newUser = await mariadbUser.create({ firstName: firstName, lastName: lastName, email: email, password: hashedPassword, session: session })
+    //     } catch (error) {
+    //         console.error(error)
+    //         res.send({
+    //             data: false,
+    //             error: {
+    //                 errorCode: 400,
+    //                 errorMessage: "The user could not be created! Please try again!"
+    //             }
+    //         })
+    //         return;
+    //     }
+    //     res.send({
+    //         data: session,
+    //         error: ""
+    //     })
+    //     res.end();
+    // }
+)
 
 
 router.get('/get-users', async (req,res) => {
@@ -998,16 +1039,13 @@ async function getUserWithEmailFromMariadb(req, res, next){
     console.log("came in getUserWithEmailFromMariadb method!")
     try {
         var user = await mariadbUser.findOne({ where: {email: req.body.email} });
-        // console.log("found user in getUserWithEmailFromMariadb method: ",user);
+        console.log("found user in getUserWithEmailFromMariadb method: ",user);
         if(user === null){
-            res.error = {
-                errorCode: 500,
-                errorMessage: "User was not found!"
-            }
+            res.foundUser = false;
             next();
         }
         else{
-            res.user = user;
+            res.foundUser = true;
             next();
         }
 
