@@ -1046,6 +1046,7 @@ async function getUserWithEmailFromMariadb(req, res, next){
         }
         else{
             res.foundUser = true;
+            res.user = user;
             next();
         }
 
