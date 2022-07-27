@@ -109,7 +109,7 @@ function hashPassword(password){
 //          4.1. return false and error message as "invalid email or password! Please tyr again!"
 router.post("/login-mariadb", getUserWithEmailFromMariadb, async (req, res) => {
     console.log("middleware response for login url: ",res.error)
-    if(res.error){
+    if((res.error) || (!(res.foundUser)) ){
         console.log("user was not found!")
         res.send({
             data: false,
