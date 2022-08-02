@@ -112,7 +112,7 @@ router.post("/login-mariadb", getUserWithEmailFromMariadb, async (req, res) => {
     if((res.error) || (!(res.foundUser)) ){
         console.log("user was not found!")
         res.send({
-            data: false,
+            data: null,
             error:{
                 errorCode: 600,
                 errorMessage: "Please insert valid email or password!"
@@ -128,7 +128,7 @@ router.post("/login-mariadb", getUserWithEmailFromMariadb, async (req, res) => {
             await res.user.save();
             res.send({
                 data: session,
-                error: ""
+                error: null
             });
             res.end();
             return;
@@ -136,7 +136,7 @@ router.post("/login-mariadb", getUserWithEmailFromMariadb, async (req, res) => {
         else{
             console.log("user not authenticated!");
             res.send({
-                data: false,
+                data: null,
                 error:{
                     errorCode: 600,
                     errorMessage: "Please insert valid email or password!"
@@ -440,7 +440,7 @@ router.post('/validate', getUserWithSession, (req, res, next)=>{
 //          1.1. return true
 //      2. else:
 //          2.1. return false
-router.post("/validate-cookie-mariadb", getUserWithSessionFromMariadb, async (req, res) => {
+router.post("/validate-cookie-mariadb", getUserWithSessionFromMariadb, (req, res) => {
     console.log("came in validate-cookie-mariadb url!")
     console.log("req.body in validate-cookie-mariadb is: ",req.body)
     console.log("session in validate-cookie-mariadb is: ",req.body.data)
@@ -974,7 +974,16 @@ async function getUserWithSession(req,res,next){
 //      5. return
 async function getUserWithSessionFromMariadb(req, res, next){
     console.log("came in getUserWithSessionFromMariadb method!")
-    console.log("session in getUserWithSessionFromMariadb method is: ",req.body.data)
+    console.log("req.body in getUserWithSessionFromMariadb method is: ",req.body)
+    console.log("req.body.data in getUserWithSessionFromMariadb method is: ",req.body.data)
+    console.log("req.body.data.session in getUserWithSessionFromMariadb method is: ",req.body.data.session)
+    if (req.body.data === undefined) {
+
+        res.user = false;
+        next();
+        return;
+
+    }
     const user = await mariadbUser.findAll({
         where: {
             session: req.body.data
