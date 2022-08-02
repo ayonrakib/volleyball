@@ -6,6 +6,8 @@ const Poll = require('../models/Poll');
 const User = require('../models/User');
 const mariadbUser = require("../mariadb-models/User");
 const file = require('../movies.json');
+const ApiError = require("../utils/exception").ApiError;
+const Response = require("../utils/rest");
 
 const multer = require('multer');
 var util = require('util');
@@ -168,8 +170,12 @@ router.post("/register-mariadb", getUserWithEmailFromMariadb, async (req, res) =
     console.log("arrived in register-mariadb url!");
     console.log("response user obj is: ",res.foundUser);
     if(res.foundUser){
+        const error = ApiError.formErrorFormat(200, 'User already exists!')
+        console.log("error in the standard format in register-mariadb when user found: ",error)
+        console.log("error.errorCode in the standard format in register-mariadb when user found: ",error.errorCode)
+        console.log("error.errorMessage in the standard format in register-mariadb when user found: ",error.errorMessage)
         res.send({
-            data: false,
+            data: null,
             error: {
                 errorCode: 200,
                 errorMessage: 'User already exists!'
@@ -192,7 +198,7 @@ router.post("/register-mariadb", getUserWithEmailFromMariadb, async (req, res) =
         } catch (error) {
             console.error(error)
             res.send({
-                data: false,
+                data: null,
                 error: {
                     errorCode: 400,
                     errorMessage: "The user could not be created! Please try again!"
@@ -202,7 +208,7 @@ router.post("/register-mariadb", getUserWithEmailFromMariadb, async (req, res) =
         }
         res.send({
             data: session,
-            error: ""
+            error: null
         })
         res.end();
         return;
@@ -1046,6 +1052,7 @@ async function getUserWithEmail(req,res,next){
 
 async function getUserWithEmailFromMariadb(req, res, next){
     console.log("came in getUserWithEmailFromMariadb method!")
+    console.log("req.body in getUserWithEmailFromMariadb method: ",req.body)
     try {
         var user = await mariadbUser.findOne({ where: {email: req.body.email} });
         console.log("found user in getUserWithEmailFromMariadb method: ",user);
