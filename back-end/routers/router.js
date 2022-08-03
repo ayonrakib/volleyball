@@ -171,15 +171,15 @@ router.post("/register-mariadb", getUserWithEmailFromMariadb, async (req, res) =
     console.log("response user obj is: ",res.foundUser);
     if(res.foundUser){
         const error = ApiError.formErrorFormat(200, 'User already exists!')
-        console.log("error in the standard format in register-mariadb when user found: ",error)
-        console.log("error.errorCode in the standard format in register-mariadb when user found: ",error.errorCode)
-        console.log("error.errorMessage in the standard format in register-mariadb when user found: ",error.errorMessage)
+        // console.log("error in the standard format in register-mariadb when user found: ",error)
+        console.log("error.errorCode in the standard format in register-mariadb when user found: ",error.code)
+        console.log("error.errorMessage in the standard format in register-mariadb when user found: ",error.message)
         res.send({
             data: null,
             error: {
                 errorCode: 200,
-                errorMessage: 'User already exists!'
-            }
+                errorMessage: 'User already exists!' 
+            } 
         })
         res.end();
         return;
