@@ -928,7 +928,7 @@ async function getUserWithSessionFromMariadb(req, res, next){
     console.log("came in getUserWithSessionFromMariadb method!")
     console.log("req.body in getUserWithSessionFromMariadb method is: ",req.body)
     console.log("req.body.data in getUserWithSessionFromMariadb method is: ",req.body.data)
-    console.log("req.body.data.session in getUserWithSessionFromMariadb method is: ",req.body.data.session)
+    // console.log("req.body.data.session in getUserWithSessionFromMariadb method is: ",req.body.data.session)
     if (req.body.data === undefined) {
 
         res.user = false;
