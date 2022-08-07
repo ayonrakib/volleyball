@@ -8,6 +8,7 @@ const mariadbUser = require("../mariadb-models/User");
 const file = require('../movies.json');
 const ApiError = require("../utils/exception").ApiError;
 const Response = require("../utils/rest");
+const GetErrorFormat = require("../utils/error");
 
 const multer = require('multer');
 var util = require('util');
@@ -170,39 +171,32 @@ router.post("/register-mariadb", getUserWithEmailFromMariadb, async (req, res) =
     console.log("arrived in register-mariadb url!");
     console.log("response user obj is: ",res.foundUser);
     if(res.foundUser){
-        const error = ApiError.formErrorFormat(200, 'User already exists!')
-        // console.log("error in the standard format in register-mariadb when user found: ",error)
-        console.log("error.errorCode in the standard format in register-mariadb when user found: ",error.code)
-        console.log("error.errorMessage in the standard format in register-mariadb when user found: ",error.message)
+        const error = GetErrorFormat(200, "User already exists!")
+        // console.log("error is: ", error) 
         res.send({
             data: null,
-            error: {
-                errorCode: 200,
-                errorMessage: 'User already exists!' 
-            } 
+            error: error
         })
         res.end();
         return;
     }
     else if(!(res.foundUser)){
-        console.log("req dict is: ",req.body);
+        // console.log("req dict is: ",req.body);
         var firstName = req.body.firstName;
         var lastName = req.body.lastName;
         var email = req.body.email;
         var password = req.body.password;
         var hashedPassword = hashPassword(password);
-        console.log("hashed password is: ",hashedPassword)
+        // console.log("hashed password is: ",hashedPassword)
         var session = getSession();
         try {
             var newUser = await mariadbUser.create({ firstName: firstName, lastName: lastName, email: email, password: hashedPassword, session: session })
-        } catch (error) {
-            console.error(error)
+        } catch (e) {
+            console.error(e)
+            const error = GetErrorFormat(400, "The user could not be created! Please try again!");
             res.send({
                 data: null,
-                error: {
-                    errorCode: 400,
-                    errorMessage: "The user could not be created! Please try again!"
-                }
+                error: error
             })
             return;
         }
@@ -213,56 +207,7 @@ router.post("/register-mariadb", getUserWithEmailFromMariadb, async (req, res) =
         res.end();
         return;
     }
-}
-    // if(res.error){
-    //     res.send({
-    //         data: false,
-    //         error: {
-    //             errorCode: 300,
-    //             errorMessage: "There was a problem while creating the user, please try again!"
-    //         }
-    //     });
-    //     res.end();
-    // }
-    // else if(res.user){
-    //     res.send({
-    //         data: false,
-    //         error: {
-    //             errorCode: 200,
-    //             errorMessage: 'User already exists!'
-    //         }
-    //     })
-    //     res.end();
-    // }
-    // else{
-    //     console.log("req dict is: ",req.body);
-    //     var firstName = req.body.firstName;
-    //     var lastName = req.body.lastName;
-    //     var email = req.body.email;
-    //     var password = req.body.password;
-    //     var hashedPassword = hashPassword(password);
-    //     console.log("hashed password is: ",hashedPassword)
-    //     var session = getSession();
-    //     try {
-    //         var newUser = await mariadbUser.create({ firstName: firstName, lastName: lastName, email: email, password: hashedPassword, session: session })
-    //     } catch (error) {
-    //         console.error(error)
-    //         res.send({
-    //             data: false,
-    //             error: {
-    //                 errorCode: 400,
-    //                 errorMessage: "The user could not be created! Please try again!"
-    //             }
-    //         })
-    //         return;
-    //     }
-    //     res.send({
-    //         data: session,
-    //         error: ""
-    //     })
-    //     res.end();
-    // }
-)
+})
 
 
 router.get('/get-users', async (req,res) => {
@@ -450,21 +395,22 @@ router.post("/validate-cookie-mariadb", getUserWithSessionFromMariadb, (req, res
     console.log("came in validate-cookie-mariadb url!")
     console.log("req.body in validate-cookie-mariadb is: ",req.body)
     console.log("session in validate-cookie-mariadb is: ",req.body.data)
-    if(res.user === false){
+    
+    if (res.user === false) {
+
+        const error = GetErrorFormat(1500, "user was not found!")
         res.send({
-            data: false,
-            error:
-            {
-                errorCode: 1500,
-                errorMessage: "user was not found!"
-            }
+            data: null,
+            error: error
         })
-    }
-    else{
+
+    } else {
+        
         res.send({
             data: true,
-            error: ""
+            error: null
         })
+
     }
     res.end();
     return;
