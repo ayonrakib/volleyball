@@ -170,9 +170,9 @@ router.post("/login-mariadb", getUserWithEmailFromMariadb, async (req, res) => {
 router.post("/register-mariadb", getUserWithEmailFromMariadb, async (req, res) => {
     console.log("arrived in register-mariadb url!");
     console.log("response user obj is: ",res.foundUser);
-    if(res.foundUser){
+    if(res.foundUser !== false){
         const error = GetErrorFormat(200, "User already exists!")
-        // console.log("error is: ", error) 
+        console.log("error is: ", error) 
         res.send({
             data: null,
             error: error
@@ -187,7 +187,7 @@ router.post("/register-mariadb", getUserWithEmailFromMariadb, async (req, res) =
         var email = req.body.email;
         var password = req.body.password;
         var hashedPassword = hashPassword(password);
-        // console.log("hashed password is: ",hashedPassword)
+        console.log("hashed password in creating user in register-mariadb url is: ",hashedPassword)
         var session = getSession();
         try {
             var newUser = await mariadbUser.create({ firstName: firstName, lastName: lastName, email: email, password: hashedPassword, session: session })
